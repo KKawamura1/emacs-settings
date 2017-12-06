@@ -26,9 +26,6 @@
 (load "startup-init")
 
 ;; 特定のパッケージの設定
-;; (load "melpa-init")
-;; (load "helm-init")
-;; (load "magit-init")
 (load "markdown-init")
 (load "split-window-init")
 (load "linum-init")

@@ -69,8 +69,10 @@
 ;;; key binding
 ;; キーバインド設定
 
+;; C-h をBackspaceにする
+;; 必要性を感じなかったのでボツ
 ;; (global-set-key [?\C-h] 'delete-backward-char)
 ;; (global-set-key [?\C-?])
-(define-key key-translation-map [?\C-h] [?\C-?])
+;; (define-key key-translation-map [?\C-h] [?\C-?])
 
 ;;; operability-init.el ends here

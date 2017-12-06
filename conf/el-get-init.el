@@ -19,7 +19,8 @@
 
 ;;; インストール失敗時にやること
 ;; 参考: http://myemacs.readthedocs.io/ja/latest/el-get.html
-;; $ cd ~/.emacs.d
+;; $ mkdir -p ~/.emacs.d/el-get
+;; $ cd ~/.emacs.d/el-get
 ;; $ git clone https://github.com/dimitri/el-get
 
 ;;; パスを通す
@@ -39,7 +40,7 @@
 
 ;;; 設定されたパッケージをインストール
 ;; 設定されていないものをすべてアンインストール
-;; (el-get-cleanup my-packages)
+(el-get-cleanup my-packages)
 ;; インストール
 ;; この際 el-get-user-package-directory に設定されたelispが呼ばれる
 (el-get 'sync my-packages)
