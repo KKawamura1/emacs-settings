@@ -8,26 +8,27 @@
 
 (require 'helm)
 (require 'helm-config)
+(require 'bind-key)
 
 ;;; プレフィクス
 ;; "C-x c" は "C-x C-c" (Emacs終了) と近いので，"C-c h" にする
 ;; Note: We must set "C-c h" globally, because we cannot
 ;; change 'helm-command-prefix-key' once 'helm-config' is loaded.
-(global-set-key (kbd "C-c h") 'helm-command-prefix)
+(bind-key "C-c h" 'helm-command-prefix)
 (global-unset-key (kbd "C-x c"))
 
 ;;; helm bufferにおける選択対象へのアクション
 ;; C-SPCで選んだ対象へのアクションを，TABで選ぶ
 ;; TAB と C-z を入れ替える (TABの方が使い勝手がいいので)
-(define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
-(define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; terminalではC-iとTABは同じなのでこれも設定する
-(define-key helm-map (kbd "C-z") 'helm-select-action) ; アクションを選び，helm bufferを閉じる (あまり使わない)
+(bind-key "<tab>" 'helm-execute-persistent-action helm-map)
+(bind-key "C-i" 'helm-execute-persistent-action helm-map) ; terminalではC-iとTABは同じなのでこれも設定する
+(bind-key "C-z" 'helm-select-action helm-map) ; アクションを選び，helm bufferを閉じる (あまり使わない)
 
 ;;; helmでググる
 ;; C-c h g でグーグル検索できる
 ;; そのときにできればcurlを使う
 (setq browse-url-generic-program "google-chrome")
-(global-set-key (kbd "C-c h g") 'helm-google-suggest)
+(bind-key "C-c h g" 'helm-google-suggest)
 (when (executable-find "curl")
   (setq helm-google-suggest-use-curl-p t))
 
@@ -69,17 +70,17 @@
 
 ;;; helmシリーズを使うようにキーバインドを変更
 ;; M-x (関数の実行)
-(global-set-key (kbd "M-x") 'helm-M-x)
+(bind-key "M-x" 'helm-M-x)
 (setq helm-M-x-fuzzy-match t)
 ;; M-y (キルリングの表示)
-(global-set-key (kbd "M-y") 'helm-show-kill-ring)
+(bind-key "M-y" 'helm-show-kill-ring)
 ;; C-x b (バッファやその他リソースの表示)
-(global-set-key (kbd "C-x b") 'helm-mini)
+(bind-key "C-x b" 'helm-mini)
 (setq helm-buffers-fuzzy-matching t
       helm-recentf-fuzzy-match    t)
 ;; C-x C-f (ファイルを開く)
 ;; C-c h で過去のファイル履歴を閲覧できる
-(global-set-key (kbd "C-x C-f") 'helm-find-files)
+(bind-key "C-x C-f" 'helm-find-files)
 ;; <prefix>-i (定義とかを検索してくれる)
 ;; 参考: https://qiita.com/jabberwocky0139/items/86df1d3108e147c69e2c#%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89-helm-semantic-or-imenu
 (setq helm-semantic-fuzzy-match t
