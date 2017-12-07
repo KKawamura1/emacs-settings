@@ -6,6 +6,7 @@
 ;; http://yamakichi.hatenablog.com/entry/2016/06/29/133246
 
 (require 'magit)
+(require 'bind-key)
 
 ;;; auto-revert-mode
 ;; git checkoutとかした時にemacsのbufferの内容を強制的に変更するかどうか
@@ -19,3 +20,6 @@
 
 ;;; 便利コマンドの割り当て
 ;; magit-status
+(bind-key "C-x m" 'magit-status)
+;; magit-blame (ファイルの変更一覧を見る)
+(bind-key "C-c l" 'magit-blame)

@@ -13,21 +13,15 @@
 (setq package-archives '(
 ("ELPA" . "http://tromey.com/elpa/")
 ("gnu" . "http://elpa.gnu.org/packages/")
-("melpa" . "http://melpa.milkbox.net/packages/")
+("melpa-stable" . "http://stable.melpa.org/packages/")
+;; ("melpa" . "http://melpa.milkbox.net/packages/")
 ("marmalade" . "http://marmalade-repo.org/packages/")
 ("org" . "http://orgmode.org/elpa/")
 ("SC" . "http://joseito.republika.pl/sunrise-commander/")))
 
-;;; パスを通す
+;;; パスを決めておく
 ;; el-get 自体の所在
 (setq el-get-install-dir (locate-user-emacs-file "el-get/el-get"))
-;; el-getでダウンロードしたパッケージの所在
-(setq el-get-dir (locate-user-emacs-file "el-get/el-get-packages"))
-;; el-get用パッケージ定義ファイル置き場の所在
-(add-to-list 'el-get-recipe-path (locate-user-emacs-file "el-get/el-get/recipes"))
-(add-to-list 'el-get-recipe-path (locate-user-emacs-file "el-get-user/recipes"))
-(setq el-get-recipe-path-elpa (locate-user-emacs-file "el-get/el-get/recipes/elpa"))
-(setq el-get-recipe-path-emacswiki (locate-user-emacs-file "el-get/el-get/recipes/emacswiki"))
 ;; パッケージが el-get sync で initialize された時に実行される初期化用elisp置き場の所在
 (setq el-get-user-package-directory (locate-user-emacs-file "conf/el-get-package-init"))
 
@@ -48,6 +42,10 @@
   (el-get-elpa-build-local-recipes)
   (message "-- udpating emacs-wiki-local-recipes")
   (el-get-emacswiki-build-local-recipes))
+
+;; el-get用パッケージ定義ファイル置き場の所在
+(add-to-list 'el-get-recipe-path (locate-user-emacs-file "el-get-user/recipes"))
+
 
 ;;; インストール失敗時にやること
 ;; 参考: http://myemacs.readthedocs.io/ja/latest/el-get.html
