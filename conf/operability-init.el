@@ -20,14 +20,22 @@
 (defun hs-load-init ()
   (hs-minor-mode 1)
   (bind-keys :map hs-minor-mode-map
-	     ("C-c /" . hs-toggle-hiding)
-	     ("C-c ," . hs-hide-all)
-	     ("C-c ." . hs-show-all)
+	     ("C-x /" . hs-toggle-hiding)
+	     ("C-x ," . hs-hide-all)
+	     ("C-x ." . hs-show-all)
 	     )
   )
 (loop for hook in programing-hooks do
       (add-hook hook 'hs-load-init)
-)
+      )
+;; diminishする
+;; 参考
+;; https://qiita.com/tadsan/items/c859c5c04724cbda75fc
+(defmacro safe-diminish (file mode &optional new-name)
+  "https://github.com/larstvei/dot-emacs/blob/master/init.org"
+  `(with-eval-after-load, file
+     (diminish, mode, new-name)))
+(safe-diminish "hs-minor-mode" 'hs-minor-mode)
 
 ;;; 任意行ジャンプ
 ;;; 参考 : http://qiita.com/aita/items/d38ca96d7230d80c5e49

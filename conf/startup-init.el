@@ -50,3 +50,6 @@
 ;;; 拡張子設定
 ;; 参考: http://qiita.com/tadsan/items/a21c268021b46b8a6b33
 (add-to-list 'auto-mode-alist '("\\.zshrc.[^.]*\\'" . sh-mode))
+
+;;; recentf起動
+(recentf-mode 1)

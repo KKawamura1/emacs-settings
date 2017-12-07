@@ -31,10 +31,14 @@
   (setq use-package-always-ensure t)
   )
 
+;;; ====== use-package に必要なもの ======
 ;;; bind-key
 (use-package bind-key)
-;;;diminish
+
+;;; diminish
 (use-package diminish)
+
+;;; ====== 基本常時使用するもの ======
 ;;; Helm
 ;; 参考
 ;; https://github.com/emacs-helm/helm/issues/1025
@@ -55,8 +59,8 @@
 	 ("M-y" . helm-show-kill-ring)
 	 ("C-x b" . helm-mini)
 	 ("C-x C-f" . helm-find-files)
-	 ("C-x f" . helm-resentf)	; 最近使ったファイル (C-x b でも出る)
-	 ("C-c l" . helm-imenu)		; 関数の定義一覧
+	 ;; ("C-x f" . helm-resentf)	; 最近使ったファイル (C-x b でも出る)
+	 ("C-c d" . helm-imenu)		; 関数の定義一覧
 	 :map helm-map
 	 ;; helm bufferにおける選択対象へのアクション
 	 ;; C-SPCで選んだ対象へのアクションを，TABで選ぶ
@@ -118,6 +122,96 @@
   (add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
   (helm-mode 1)
   )
+
+;;; undo-tree
+(use-package undo-tree
+  :diminish undo-tree-mode
+  :bind (
+	 ("M-/" . undo-tree-redo)
+	 )
+  :init
+  (global-undo-tree-mode t)
+  )
+
+;;; expand-region
+(use-package expand-region
+  :diminish transient-mark-mode
+  :bind (
+	 ("M-@" . er/expand-region)
+	 )
+  :init
+  (transient-mark-mode t)
+  )
+
+;;; smartparens
+(use-package smartparens
+  :diminish smartparens-mode
+  :init
+  (require 'smartparens-config)
+  ;; 余計な機能を削除
+  ;; 参考: https://qiita.com/ShingoFukuyama/items/ed1af137a98e0028e025
+  (ad-disable-advice 'delete-backward-char 'before 'sp-delete-pair-advice)
+  (ad-activate 'delete-backward-char)
+  (smartparens-global-mode)
+  )
+
+;;; auto complete
+(use-package auto-complete
+  :pin melpa
+  :diminish auto-complete-mode
+  :init
+  ;; 参考
+  ;; http://keisanbutsuriya.hateblo.jp/entry/2015/02/08/175005
+  (require 'auto-complete-config)
+  (ac-config-default)
+  (add-to-list 'ac-modes 'text-mode)         ;; text-modeでも自動的に有効にする
+  (add-to-list 'ac-modes 'fundamental-mode)  ;; fundamental-mode
+  (add-to-list 'ac-modes 'org-mode)
+  (add-to-list 'ac-modes 'yatex-mode)
+  (ac-set-trigger-key "TAB")
+  (setq ac-use-menu-map t)       ;; 補完メニュー表示時にC-n/C-pで補完候補選択
+  (setq ac-use-fuzzy t)          ;; 曖昧マッチ
+  (custom-set-variables '(ac-ignore-case nil))
+  )
+
+;;; smart-newline
+(use-package smart-newline
+  :diminish smart-newline-mode
+  :bind (
+	 ("C-m" . smart-newline)
+	 )
+  :init
+  (loop for hook in programing-hooks-without-python
+	do (add-hook hook 'smart-newline-mode))
+  (defadvice smart-newline (around C-u activate)
+    "C-uを押したら元のC-mの挙動をするようにした。
+org-modeなどで活用。"
+    (if (not current-prefix-arg)
+	ad-do-it
+      (let (current-prefix-arg)
+	(let (smart-newline-mode)
+	  (call-interactively (key-binding (kbd "C-m")))))))
+  )
+
+;;; which-key
+(use-package which-key
+  :diminish which-key-mode
+  :config
+  (which-key-setup-side-window-bottom)
+  (which-key-mode 1)
+  )
+
+;;; sequential-command
+;; 参考
+;; http://d.hatena.ne.jp/rubikitch/20090219/sequential_command
+(use-package sequential-command
+  :init
+  (require 'sequential-command-config)
+  (bind-key "C-a" 'seq-home)
+  (bind-key "C-e" 'seq-end)
+  )
+
+;;; ====== 特定のモードで使用するもの ======
 ;;; magit
 (use-package magit
   :pin melpa-stable
@@ -135,6 +229,133 @@
   (setq vc-handled-backends '())
   (eval-after-load "vc" '(remove-hook 'find-file-hooks 'vc-find-file-hook))
   )
+
+;;; pyenv-mode
+(use-package pyenv-mode
+  :pin melpa
+  :after elpy
+  :init
+  (pyenv-mode)
+  )
+
+;;; jedi
+(use-package jedi
+  :config
+
+  )
+
+;;; flycheck
+(use-package flycheck
+  :after helm
+  :bind (
+	 ("C-c C-v" . helm-flycheck)
+	 )
+  )
+
+;;; elpy
+;; require some pip packages:
+;;     flake8 importmagic yapf autopep8 ipdb jedi ipython
+;; also you must use pyenv & pyenv-virtualenv.
+;; see: https://smythp.com/emacs/python/2016/04/27/pyenv-elpy.html
+(use-package elpy
+  :pin elpy
+  :after (jedi flycheck smartrep)
+  :init
+  ;; 参考
+  ;; https://org-technology.com/posts/emacs-elpy.html
+  (elpy-enable)
+  (defun ssbb-pyenv-hook ()
+    "Automatically activates pyenv version if .python-version file exists."
+    (f-traverse-upwards
+     (lambda (path)
+       (let ((pyenv-version-path (f-expand ".python-version" path)))
+	 (if (f-exists? pyenv-version-path)
+	     (pyenv-mode-set (s-trim (f-read-text pyenv-version-path 'utf-8))))))))
+
+  (add-hook 'find-file-hook 'ssbb-pyenv-hook)
+  ;; 参考
+  ;; https://org-technology.com/posts/emacs-elpy.html
+  (elpy-use-ipython)
+  (setq elpy-rpc-backend "jedi")
+  (remove-hook 'elpy-modules 'elpy-module-flymake)
+  (add-hook 'elpy-mode-hook 'flycheck-mode)
+  :config
+  (smartrep-define-key elpy-mode-map "C-c"
+		       '(("C-n" . flycheck-next-error)
+			 ("C-p" . flycheck-previous-error)))
+  ;; 参考
+  ;; https://org-technology.com/posts/emacs-elpy.html
+  (set-face-background 'highlight-indentation-face "#313131")
+  (set-face-background 'highlight-indentation-current-column-face "#777777")
+  (add-hook 'elpy-mode-hook 'highlight-indentation-mode)
+  (add-hook 'elpy-mode-hook 'highlight-indentation-current-column-mode)
+  )
+
+;;; flycheck-pos-tip
+(use-package flycheck-popup-tip)
+(use-package flycheck-pos-tip
+  :after (flycheck flycheck-popup-tip)
+  :init
+  (add-hook 'flycheck-mode-hook 'flycheck-popup-tip-mode)
+  (if (display-graphic-p)
+      (flycheck-pos-tip-mode)
+    (flycheck-popup-tip-mode))
+  )
+
+;;; py-autopep8
+(use-package py-autopep8
+  ;; 参考
+  ;; https://github.com/paetzke/py-autopep8.el
+  :init
+  (add-hook 'python-mode-hook 'py-autopep8-enable-on-save)
+  :config
+  (setq py-autopep8-options '("--max-line-length=100"))
+  )
+
+;;; cc-mode
+(use-package cc-mode)
+
+;;; yatex
+(use-package yatex
+  ;; 参考
+  ;; http://hikaru515.hatenablog.com/entry/2015/11/10/000000
+  :mode (
+	 ("\\.tex\\'" . yatex-mode)
+	 ("\\.ltx\\'" . yatex-mode)
+	 ("\\.sty\\'" . yatex-mode)
+	 )
+  :init
+  ;; set YaTeX coding system
+  (setq YaTeX-kanji-code 4) ; UTF-8 の設定
+  (add-hook 'yatex-mode-hook
+	    '(lambda ()
+	       (setq YaTeX-use-AMS-LaTeX t) ; align で数式モードになる
+	       (setq YaTeX-use-hilit19 nil
+		     YateX-use-font-lock t)
+	       (setq tex-command "latexmk") ; typeset command
+	       (setq dvi2-command "open -a /Applications/Preview.app") ; preview command
+	       (setq tex-pdfview-command "open -a /Applications/Preview.app")))
+  )
+
+;;; markdown-mode
+;; 参考
+;; http://futurismo.biz/archives/2137
+(use-package markdown-mode
+  :mode (
+	 "\\.txt\\'"
+	 "\\.text\\'"
+	 "\\.md\\'"
+	 "\\.markdown\\'"
+	 )
+  )
+
+;;; ====== 起動時のみ使うもの ======
+(use-package init-open-recentf
+  :init
+  (init-open-recentf)
+  )
+
+;;; ====== 見た目に関わるもの ======
 ;;; powerline
 (use-package powerline
   :pin melpa-stable
@@ -193,34 +414,48 @@
   ;; 参考: http://ytsk.hatenablog.com/entry/2015/09/23/021856
   ;;(setq ns-use-srgb-colorspace nil)
   )
-;;; undo-tree
-(use-package undo-tree
-  :diminish undo-tree-mode
+
+;;; linum mode
+;; 参考
+;; https://org-technology.com/posts/nlinum-mode.html
+;; https://www.emacswiki.org/emacs/LineNumbers
+(use-package linum
+  :init
+  (global-linum-mode t)
+  (setq linum-format "%5d ")
+  )
+(use-package hlinum
+  :after linum
+  :init
+  (hlinum-activate)
+  )
+
+;;; visual-regexp
+(use-package visual-regexp
   :bind (
-	 ("M-/" . undo-tree-redo)
+	 ("M-%" . vr/query-replace)
+	 ("C-M-r" . vr/isearch-backward)
+	 ("C-M-s" . vr/isearch-forward)
 	 )
-  :init
-  (global-undo-tree-mode t)
   )
-;;; expand-region
-(use-package expand-region
-  :diminish transient-mark-mode
-  :bind (
-	 ("M-@" . er/expand-region)
-	 )
+(use-package visual-regexp-steroids
   :init
-  (transient-mark-mode t)
+  (setq vr/engine 'python)
   )
-;;; smartparens
-(use-package smartparens
+
+;;; volatile-highlights
+(use-package volatile-highlights
   :init
-  (require 'smartparens-config)
-  ;; 余計な機能を削除
-  ;; 参考: https://qiita.com/ShingoFukuyama/items/ed1af137a98e0028e025
-  (ad-disable-advice 'delete-backward-char 'before 'sp-delete-pair-advice)
-  (ad-activate 'delete-backward-char)
-  (smartparens-global-mode)
+  ;; 参考
+  ;; https://github.com/k-talo/volatile-highlights.el/blob/master/README-ja.org
+  (volatile-highlights-mode t)
+  :after undo-tree
+  ;; undo-treeをサポート
+  (vhl/define-extension 'undo-tree 'undo-tree-yank 'undo-tree-move)
+  (vhl/install-extension 'undo-tree)
   )
+
+;;; ====== 特に使用を意識しないもの ======
 ;;; session
 (use-package session
   :init
@@ -242,171 +477,25 @@
   ;; Save session info every 15 minutes
   (setq my-timer-for-session-save-session (run-at-time t (* 15 60) 'session-save-session))
   )
-;;; visual-regexp
-(use-package visual-regexp
-  :bind (
-	 ("M-%" . vr/query-replace)
-	 ("C-M-r" . vr/isearch-backward)
-	 ("C-M-s" . vr/isearch-forward)
-	 )
-  )
-(use-package visual-regexp-steroids
-  :init
-  (setq vr/engine 'python)
-  )
-;;; smartrep
-(use-package smartrep)
-;;; auto complete
-(use-package auto-complete
-  :pin melpa
-  :diminish auto-complete-mode
-  :init
-  ;; 参考
-  ;; http://keisanbutsuriya.hateblo.jp/entry/2015/02/08/175005
-  (require 'auto-complete-config)
-  (ac-config-default)
-  (add-to-list 'ac-modes 'text-mode)         ;; text-modeでも自動的に有効にする
-  (add-to-list 'ac-modes 'fundamental-mode)  ;; fundamental-mode
-  (add-to-list 'ac-modes 'org-mode)
-  (add-to-list 'ac-modes 'yatex-mode)
-  (ac-set-trigger-key "TAB")
-  (setq ac-use-menu-map t)       ;; 補完メニュー表示時にC-n/C-pで補完候補選択
-  (setq ac-use-fuzzy t)          ;; 曖昧マッチ
-  (custom-set-variables '(ac-ignore-case nil))
-  )
-;;; pyenv-mode
-(use-package pyenv-mode
-  :pin melpa
-  :after elpy
-  :init
-  (pyenv-mode)
-  )
-;;; jedi
-(use-package jedi)
-;;; flycheck
-(use-package flycheck
-  :after helm
-  :bind (
-	 ("C-c C-v" . helm-flycheck)
-	 )
-  )
-;;; elpy
-(use-package elpy
-  :pin elpy
-  :after (jedi flycheck smartrep)
-  :init
-  ;; 参考
-  ;; https://org-technology.com/posts/emacs-elpy.html
-  (elpy-enable)
-  (defun ssbb-pyenv-hook ()
-    "Automatically activates pyenv version if .python-version file exists."
-    (f-traverse-upwards
-     (lambda (path)
-       (let ((pyenv-version-path (f-expand ".python-version" path)))
-	 (if (f-exists? pyenv-version-path)
-	     (pyenv-mode-set (s-trim (f-read-text pyenv-version-path 'utf-8))))))))
 
-  (add-hook 'find-file-hook 'ssbb-pyenv-hook)
-  ;; 参考
-  ;; https://org-technology.com/posts/emacs-elpy.html
-  (elpy-use-ipython)
-  (setq elpy-rpc-backend "jedi")
-  (remove-hook 'elpy-modules 'elpy-module-flymake)
-  (add-hook 'elpy-mode-hook 'flycheck-mode)
+;;; smartrep
+(use-package smartrep
   :config
-  (smartrep-define-key elpy-mode-map "C-c"
-		       '(("C-n" . flycheck-next-error)
-			 ("C-p" . flycheck-previous-error)))
+  (smartrep-define-key global-map "C-x"
+    '(
+      ("{" . shrink-window-horizontally)  ; -> <-
+      ("}" . enlarge-window-horizontally) ; <- ->
+      ("@" . balance-windows)		  ; 揃える
+      ("+" . enlarge-window)		  ; 縦拡大
+      ("-" . shrink-window)		  ; 縦縮小
+      )
+    )
   )
-;;; volatile-highlights
-(use-package volatile-highlights
-  :init
-  ;; 参考
-  ;; https://github.com/k-talo/volatile-highlights.el/blob/master/README-ja.org
-  (volatile-highlights-mode t)
-  :after undo-tree
-  ;; undo-treeをサポート
-  (vhl/define-extension 'undo-tree 'undo-tree-yank 'undo-tree-move)
-  (vhl/install-extension 'undo-tree)
-  )
-;;; flycheck-pos-tip
-(use-package flycheck-popup-tip)
-(use-package flycheck-pos-tip
-  :after (flycheck flycheck-popup-tip)
-  :init
-  (add-hook 'flycheck-mode-hook 'flycheck-popup-tip-mode)
-  (if (display-graphic-p)
-      (flycheck-pos-tip-mode)
-    (flycheck-popup-tip-mode))
-  )
-;;; cc-mode
-(use-package cc-mode)
+
 ;;; popwin
 (use-package popwin
   :config
   (setq display-buffer-function 'popwin:display-buffer)
-  )
-;;; py-autopep8
-(use-package py-autopep8
-  ;; 参考
-  ;; https://github.com/paetzke/py-autopep8.el
-  :init
-  (add-hook 'python-mode-hook 'py-autopep8-enable-on-save)
-  :config
-  (setq py-autopep8-options '("--max-line-length=100"))
-  )
-;;; yatex
-(use-package yatex
-  ;; 参考
-  ;; http://hikaru515.hatenablog.com/entry/2015/11/10/000000
-  :mode (
-	 ("\\.tex\\'" . yatex-mode)
-	 ("\\.ltx\\'" . yatex-mode)
-	 ("\\.sty\\'" . yatex-mode)
-	 )
-  :init
-  ;; set YaTeX coding system
-  (setq YaTeX-kanji-code 4) ; UTF-8 の設定
-  (add-hook 'yatex-mode-hook
-	    '(lambda ()
-	       (setq YaTeX-use-AMS-LaTeX t) ; align で数式モードになる
-	       (setq YaTeX-use-hilit19 nil
-		     YateX-use-font-lock t)
-	       (setq tex-command "latexmk") ; typeset command
-	       (setq dvi2-command "open -a /Applications/Preview.app") ; preview command
-	       (setq tex-pdfview-command "open -a /Applications/Preview.app")))
-  )
-;;; smart-newline
-(use-package smart-newline
-  :bind (
-	 ("C-m" . smart-newline)
-	 )
-  :init
-  (loop for hook in programing-hooks-without-python
-	do (add-hook hook 'smart-newline-mode))
-  (defadvice smart-newline (around C-u activate)
-    "C-uを押したら元のC-mの挙動をするようにした。
-org-modeなどで活用。"
-    (if (not current-prefix-arg)
-	ad-do-it
-      (let (current-prefix-arg)
-	(let (smart-newline-mode)
-	  (call-interactively (key-binding (kbd "C-m")))))))
-  )
-;;; which-key
-(use-package which-key
-  :config
-  (which-key-setup-side-window-bottom)
-  (which-key-mode 1)
-  )
-
-;;; libressl
-;; emacs on macがうまくsecurityの認証をできないので
-;; liblesslにCAを認証させる
-;; 参考: https://blog.vifortech.com/posts/emacs-tls-fix/
-(use-package gnutls
-  :config
-  (add-to-list 'gnutls-trustfiles "/usr/local/etc/openssl/cert.pem")
   )
 
 ;;; emacsclient
@@ -417,34 +506,17 @@ org-modeなどで活用。"
 ;;   (unless (server-running-p) (server-start))
 ;;   )
 
+;;; libressl
+;; emacs on macがうまくsecurityの認証をできないので
+;; liblesslにCAを認証させる
+;; 参考: https://blog.vifortech.com/posts/emacs-tls-fix/
+(use-package gnutls
+  :config
+  (add-to-list 'gnutls-trustfiles "/usr/local/etc/openssl/cert.pem")
+  )
+
+;;; ====== 何かあったときだけ使うもの =======
 ;;; esup
 ;; 各起動処理の読み込み時間がわかる
 ;; 参考: http://emacs.rubikitch.com/esup/
-;; (use-package esup)
-
-;;; markdown-mode
-;; 参考
-;; http://futurismo.biz/archives/2137
-(use-package markdown-mode
-  :mode (
-	 "\\.txt\\'"
-	 "\\.text\\'"
-	 "\\.md\\'"
-	 "\\.markdown\\'"
-	 )
-  )
-
-;;; linum mode
-;; 参考
-;; https://org-technology.com/posts/nlinum-mode.html
-;; https://www.emacswiki.org/emacs/LineNumbers
-(use-package linum
-  :init
-  (global-linum-mode t)
-  (setq linum-format "%5d ")
-  )
-(use-package hlinum
-  :after linum
-  :init
-  (hlinum-activate)
-  )
+(use-package esup)
