@@ -1,0 +1,18 @@
+# ホワイトリストにする
+/*
+/.*
+
+# init
+!init.el
+
+# 設定ファイル
+!conf/
+
+# el-get recipes
+!el-get-user/
+
+# 外部elisp
+!site-lisp/
+
+# このファイル自身
+!.gitignore
