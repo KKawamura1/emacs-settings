@@ -11,13 +11,12 @@
 
 ;;; melpaなどのpackageを追加
 (setq package-archives '(
-("ELPA" . "http://tromey.com/elpa/")
-("gnu" . "http://elpa.gnu.org/packages/")
-("melpa-stable" . "http://stable.melpa.org/packages/")
-;; ("melpa" . "http://melpa.milkbox.net/packages/")
-("marmalade" . "http://marmalade-repo.org/packages/")
-("org" . "http://orgmode.org/elpa/")
-("SC" . "http://joseito.republika.pl/sunrise-commander/")))
+			 ("elpy" . "https://jorgenschaefer.github.io/packages/")
+			 ("melpa" . "http://melpa.org/packages/")
+			 ("melpa-stable" . "http://stable.melpa.org/packages/")
+			 ;; ("melpa-milkbox" . "http://melpa.milkbox.net/packages/")
+			 ("marmalade" . "http://marmalade-repo.org/packages/")
+			 ))
 
 ;;; パスを決めておく
 ;; el-get 自体の所在
@@ -40,8 +39,9 @@
   (add-to-list 'el-get-recipe-path (locate-user-emacs-file "el-get-user/recipes"))
   (message "-- udpating elpa emacs-wiki-local-recipes")
   (el-get-elpa-build-local-recipes)
-  (message "-- udpating emacs-wiki-local-recipes")
-  (el-get-emacswiki-build-local-recipes))
+  ;; (message "-- udpating emacs-wiki-local-recipes")
+  ;; (el-get-emacswiki-build-local-recipes)
+  )
 
 ;; el-get用パッケージ定義ファイル置き場の所在
 (add-to-list 'el-get-recipe-path (locate-user-emacs-file "el-get-user/recipes"))

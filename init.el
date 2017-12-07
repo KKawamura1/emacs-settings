@@ -50,6 +50,26 @@
 (load "auto-complete-init")
 
 
+;; temp:
+
+;; (package-initialize)
+;; (elpy-enable)
+;; (pyenv-mode)
+;; (defun ssbb-pyenv-hook ()
+;; "Automatically activates pyenv version if .python-version file exists."
+;; (f-traverse-upwards
+;; (lambda (path)
+;;   (let ((pyenv-version-path (f-expand ".python-version" path)))
+;; 		(if (f-exists? pyenv-version-path)
+;; 				(pyenv-mode-set (s-trim (f-read-text pyenv-version-path 'utf-8))))))))
+
+;; (add-hook 'find-file-hook 'ssbb-pyenv-hook)
+
+;; for M-x pyenv-mode-set
+;; end temp
+
+
+
 ;;; auto-written
 
 ;; (custom-set-variables
@@ -95,7 +115,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(ac-ignore-case nil)
- '(package-selected-packages (quote (bind-key)))
+ '(package-selected-packages (quote (pyenv-mode elpy bind-key)))
  '(safe-local-variable-values
    (quote
     ((eval ignore-errors "Write-contents-functions is a buffer-local alternative to before-save-hook"
