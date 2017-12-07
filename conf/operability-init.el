@@ -13,6 +13,7 @@
 ;;  '(ace-isearch-use-jump 'printing-char))
 
 (use-package bind-key)
+(use-package diminish)
 
 ;;; コード折りたたみ機能
 ;; 参考 : http://ameblo.jp/the-7str-guitarist/entry-11315679803.html
@@ -24,18 +25,15 @@
 	     ("C-x ," . hs-hide-all)
 	     ("C-x ." . hs-show-all)
 	     )
+  ;; diminishする
+  ;; 参考
+  ;; https://qiita.com/tadsan/items/c859c5c04724cbda75fc
+  ;; https://www.emacswiki.org/emacs/DiminishedModes
+  (diminish 'hs-minor-mode)
   )
 (loop for hook in programing-hooks do
       (add-hook hook 'hs-load-init)
       )
-;; diminishする
-;; 参考
-;; https://qiita.com/tadsan/items/c859c5c04724cbda75fc
-(defmacro safe-diminish (file mode &optional new-name)
-  "https://github.com/larstvei/dot-emacs/blob/master/init.org"
-  `(with-eval-after-load, file
-     (diminish, mode, new-name)))
-(safe-diminish "hs-minor-mode" 'hs-minor-mode)
 
 ;;; 任意行ジャンプ
 ;;; 参考 : http://qiita.com/aita/items/d38ca96d7230d80c5e49
