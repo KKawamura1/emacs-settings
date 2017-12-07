@@ -248,9 +248,9 @@
 ;; see: https://smythp.com/emacs/python/2016/04/27/pyenv-elpy.html
 (use-package elpy
   :pin elpy
-  :after (jedi flycheck smartrep)
+  :after (jedi flycheck smartrep auto-complete)
   :bind (
-	 ("<RET>" . elpy-open-and-indent-line-below)
+	 ("<RET>" . newline-and-indent)
 	 )
   :init
   ;; 参考
@@ -281,6 +281,10 @@
   (set-face-background 'highlight-indentation-current-column-face "#777777")
   (add-hook 'elpy-mode-hook 'highlight-indentation-mode)
   (add-hook 'elpy-mode-hook 'highlight-indentation-current-column-mode)
+  ;; python で auto-complete が起動しないようにする
+  ;; 参考
+  ;; https://github.com/jorgenschaefer/elpy/issues/813
+  (setq ac-modes (delq 'python-mode ac-modes))
   )
 
 ;;; flycheck-pos-tip
