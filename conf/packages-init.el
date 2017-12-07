@@ -211,12 +211,6 @@ org-modeなどで活用。"
   (bind-key "C-e" 'seq-end)
   )
 
-;;; minibuf-isearch
-(use-package minibuf-isearch
-  :init
-  (setq minibuf-isearch-message-on-right t)
-  )
-
 ;;; ====== 特定のモードで使用するもの ======
 ;;; magit
 (use-package magit
