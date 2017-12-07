@@ -239,10 +239,7 @@ org-modeなどで活用。"
   )
 
 ;;; jedi
-(use-package jedi
-  :config
-
-  )
+(use-package jedi)
 
 ;;; flycheck
 (use-package flycheck
@@ -250,6 +247,8 @@ org-modeなどで活用。"
   :bind (
 	 ("C-c C-v" . helm-flycheck)
 	 )
+  :init
+  (setq flycheck-flake8-maximum-line-length 100)
   )
 
 ;;; elpy
