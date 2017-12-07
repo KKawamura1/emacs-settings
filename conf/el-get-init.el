@@ -14,7 +14,7 @@
 			 ("elpy" . "https://jorgenschaefer.github.io/packages/")
 			 ("melpa" . "http://melpa.org/packages/")
 			 ("melpa-stable" . "http://stable.melpa.org/packages/")
-			 ;; ("melpa-milkbox" . "http://melpa.milkbox.net/packages/")
+			 ("melpa-milkbox" . "http://melpa.milkbox.net/packages/")
 			 ("marmalade" . "http://marmalade-repo.org/packages/")
 			 ))
 
@@ -39,13 +39,14 @@
   (add-to-list 'el-get-recipe-path (locate-user-emacs-file "el-get-user/recipes"))
   (message "-- udpating elpa emacs-wiki-local-recipes")
   (el-get-elpa-build-local-recipes)
-  ;; (message "-- udpating emacs-wiki-local-recipes")
-  ;; (el-get-emacswiki-build-local-recipes)
+  (message "-- udpating emacs-wiki-local-recipes")
+  (el-get-emacswiki-build-local-recipes)
   )
 
 ;; el-get用パッケージ定義ファイル置き場の所在
 (add-to-list 'el-get-recipe-path (locate-user-emacs-file "el-get-user/recipes"))
 
+(setq el-get-sources '())
 
 ;;; インストール失敗時にやること
 ;; 参考: http://myemacs.readthedocs.io/ja/latest/el-get.html

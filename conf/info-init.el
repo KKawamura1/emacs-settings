@@ -6,8 +6,8 @@
 ;;; 関数の一覧を表示 (C-c l)
 ;;; 参考: http://blog.livedoor.jp/hira6/archives/2010-06.html
 ;;; file: http://www.bookshelf.jp/elc/summarye.el
-(autoload 'se/make-summary-buffer "summarye" nil t)
-(define-key mode-specific-map "l" 'se/make-summary-buffer)
+;; (autoload 'se/make-summary-buffer "summarye" nil t)
+;; (define-key mode-specific-map "l" 'se/make-summary-buffer)
 
 ;;; pos-tip
 ;;; tipを表示できる (auto-complete, flycheckで使用)

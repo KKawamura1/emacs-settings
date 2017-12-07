@@ -9,7 +9,6 @@
 ;; (loop for hook in hogehoge-hooks
 ;;       do (add-hook hook 'hugahuga-mode))
 
-
 (require 'cl)
 ;; プログラミング系 (python を除く)
 (defvar programing-hooks-without-python

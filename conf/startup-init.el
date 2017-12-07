@@ -1,32 +1,52 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; emacsの起動に関する諸々
+;;;       起動時に行う諸々の設定
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; code:
-
-;;; emacsclient
-;;; 一度起動したらずっとemacsが残ってくれる
-;;; 参考: http://futurismo.biz/archives/1273
-;; (require 'server)
-;; (unless (server-running-p) (server-start))
-
-;;; esup
-;;; 各起動処理の読み込み時間がわかる
-;;; 参考: http://emacs.rubikitch.com/esup/
-;; (el-get-bundle esup)
-
 ;;; garbage collection settings
-;;; ガベージコレクタの発動条件のメモリ上限を引き上げて快適にする
-;;; 参考: http://nagayasu-shinya.com/emacs-bc-cons-threshold/
+;; ガベージコレクタの発動条件のメモリ上限を引き上げて快適にする
+;; 参考: http://nagayasu-shinya.com/emacs-bc-cons-threshold/
 (setq gc-cons-threshold (* 128 1024 1024)) ;; かなりデカい値
 
-;;; liblessl
-;;; emacs on macがうまくsecurityの認証をできないので
-;;; liblesslにCAを認証させる
-;;; 参考: https://blog.vifortech.com/posts/emacs-tls-fix/
-(require 'gnutls)
-(add-to-list 'gnutls-trustfiles "/usr/local/etc/openssl/cert.pem")
+;;; フォント設定
+;; use UTF-8
+(coding-system-put 'utf-8 'category 'utf-8)
+(set-language-info "Japanese" 'coding-priority(cons 'utf-8(get-language-info "Japanese" 'coding-priority)))
+(set-language-environment "Japanese")
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(set-buffer-file-coding-system 'utf-8)
+(setq buffer-file-coding-system 'utf-8)
+(set-default-coding-systems 'utf-8)
 
+;;; ウィンドウ設定
+;; adjust window size
+;; (setq default-frame-alist (append (list
+;; 	'(width . 80)
+;; 	'(height . 50))
+;; 	default-frame-alist))
+;; hide toolbar
+(tool-bar-mode 0)
+;; hide menubar
+(menu-bar-mode 0)
+;; show line number in mode line
+(line-number-mode t)
+;; show column number in mode line
+(column-number-mode t)
+;; inhibit startup message
+;; (setq inhibit-startup-message t)
 
+;;; バックアップ
+;; 自動作成されるバックアップファイルはこのフォルダに作る
+(setq backup-directory-alist '(("." . "~/.emacs.d/backup")))
 
-;;; startup-init.el ends here
+;;; コードスタイル
+;; 保存時，文末の空白を削除
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+
+;;; Warning: 'mapcar' called for effect; を防ぐ
+;; 参考: http://d.hatena.ne.jp/kitokitoki/20100425/p1
+(setq byte-compile-warnings '(free-vars unresolved callargs redefine obsolete noruntime cl-functions interactive-only make-local))
+
+;;; 拡張子設定
+;; 参考: http://qiita.com/tadsan/items/a21c268021b46b8a6b33
+(add-to-list 'auto-mode-alist '("\\.zshrc.[^.]*\\'" . sh-mode))

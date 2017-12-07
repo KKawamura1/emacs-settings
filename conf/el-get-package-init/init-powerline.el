@@ -10,8 +10,6 @@
 ;; mac iterm2で矢印が ? になる場合の解法
 ;; https://joppot.info/2017/04/17/3824
 
-(require 'powerline)
-
 ;; http://safx-dev.blogspot.jp/2012/08/emacspower-line.html
 ;; どうもうまくいかないようだ
 (defun my-theme ()
@@ -51,7 +49,6 @@
 		      :background color-inactive)
   )
 ;;(my-theme)
-(powerline-default-theme)
 
 
 ;;; 矢印の境界をきれいにする

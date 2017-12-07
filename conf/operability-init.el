@@ -12,37 +12,30 @@
 ;;  '(ace-isearch-function 'avy-goto-char)
 ;;  '(ace-isearch-use-jump 'printing-char))
 
+(use-package bind-key)
+
 ;;; コード折りたたみ機能
-;;; 参考 : http://ameblo.jp/the-7str-guitarist/entry-11315679803.html
-;;;        http://yohshiy.blog.fc2.com/blog-entry-264.html
+;; 参考 : http://ameblo.jp/the-7str-guitarist/entry-11315679803.html
+;;        http://yohshiy.blog.fc2.com/blog-entry-264.html
 (defun hs-load-init ()
   (hs-minor-mode 1)
-  (local-set-key (kbd "C-c /") 'hs-toggle-hiding)
-  (local-set-key (kbd "C-c ,") 'hs-hide-all)
-  (local-set-key (kbd "C-c .") 'hs-show-all)
+  (bind-keys :map hs-minor-mode-map
+	     ("C-c /" . hs-toggle-hiding)
+	     ("C-c ," . hs-hide-all)
+	     ("C-c ." . hs-show-all)
+	     )
   )
 (loop for hook in programing-hooks do
       (add-hook hook 'hs-load-init)
-
 )
-
-;;; 改行を賢くする
-;;; C-o とかを開けてRET または C-m に統一する
-;;; 参考 : http://ainame.hateblo.jp/entry/2013/12/08/162032
-;;; python だと newline 後のtabがうざいので消す
-(loop for hook in various-hooks-without-python do
-      (add-hook hook 'smart-newline-mode)
-      )
-
 
 ;;; 任意行ジャンプ
 ;;; 参考 : http://qiita.com/aita/items/d38ca96d7230d80c5e49
-(global-set-key (kbd "C-x l") 'goto-line)
+(bind-key "C-x l" 'goto-line)
 
 ;;; yes or no を y n で回答可にする
 ;;; 参考 : http://yusuke-ujitoko.hatenablog.com/entry/2016/05/29/174259
 (fset 'yes-or-no-p 'y-or-n-p)
-
 
 
 ;;; Clipboardを他のアプリケーションと共通にする
@@ -65,10 +58,7 @@
   (setq interprogram-cut-function 'my-cut-function)
   (setq interprogram-paste-function 'my-paste-function))
 
-
 ;;; key binding
-;; キーバインド設定
-
 ;; C-h をBackspaceにする
 ;; 必要性を感じなかったのでボツ
 ;; (global-set-key [?\C-h] 'delete-backward-char)
