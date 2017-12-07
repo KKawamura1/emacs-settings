@@ -177,20 +177,10 @@
 ;;; smart-newline
 (use-package smart-newline
   :diminish smart-newline-mode
-  :bind (
-	 ("C-m" . smart-newline)
-	 )
   :init
+  ;; pythonではインデントがずれるので使用しない
   (loop for hook in programing-hooks-without-python
 	do (add-hook hook 'smart-newline-mode))
-  (defadvice smart-newline (around C-u activate)
-    "C-uを押したら元のC-mの挙動をするようにした。
-org-modeなどで活用。"
-    (if (not current-prefix-arg)
-	ad-do-it
-      (let (current-prefix-arg)
-	(let (smart-newline-mode)
-	  (call-interactively (key-binding (kbd "C-m")))))))
   )
 
 ;;; which-key
