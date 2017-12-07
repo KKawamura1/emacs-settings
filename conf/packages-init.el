@@ -249,6 +249,9 @@
 (use-package elpy
   :pin elpy
   :after (jedi flycheck smartrep)
+  :bind (
+	 ("<RET>" . elpy-open-and-indent-line-below)
+	 )
   :init
   ;; 参考
   ;; https://org-technology.com/posts/emacs-elpy.html
