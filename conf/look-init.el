@@ -2,13 +2,6 @@
 ;;; 見た目の変更
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; smooth-scroll
-;; C-v M-v による移動がなめらかになる
-;; 参考 : http://qiita.com/ShingoFukuyama/items/429199542c38625c5554
-;; (el-get-bundle smooth-scroll)
-;; (require 'smooth-scroll)
-;; (smooth-scroll-mode t)
-
 ;;; enable font-lock
 ;; コメントや文字列などに色をつける
 (when(fboundp 'global-font-lock-mode)(global-font-lock-mode t))
@@ -34,11 +27,3 @@
 (custom-set-faces
  '(linum-highlight-face ((t (:foreground "#0d0d0d"
 			     :background "#909090")))))
-
-;; highlight cursor line
-;; カーソルのある行に色をつける
-;; 参考: http://keisanbutsuriya.hateblo.jp/entry/2015/02/01/162035
-;; (custom-set-faces
-;;  '(hl-line ((t (:background "color-236"))))
-;;  )
-;; (global-hl-line-mode)

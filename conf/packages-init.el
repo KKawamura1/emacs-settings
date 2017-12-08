@@ -51,9 +51,6 @@
   ;; change 'helm-command-prefix-key' once 'helm-config' is loaded.
   ("C-c h" . helm-command-prefix)
   :bind (
-	 ;; うまくいかない
-	 ;; ;; C-c h g でグーグル検索
-	 ;; ("C-c h g" . helm-google-suggest)
 	 ;; helmシリーズを使うようにキーバインドを変更
 	 ("M-x" . helm-M-x)
 	 ("M-y" . helm-show-kill-ring)
@@ -68,6 +65,9 @@
 	 ("[tab]" . helm-execute-persistent-action)
 	 ("C-i" . helm-execute-persistent-action) ; terminalではC-iとTABは同じなのでこれも設定する
 	 ("C-z" . helm-select-action) ; アクションを選び，helm bufferを閉じる (あまり使わない)
+	 :map helm-command-map
+	 ;; C-c h g でグーグル検索
+	 ("g" . helm-google-suggest)
 	 )
   :init
   (require 'helm-config)
@@ -96,6 +96,22 @@
   (setq helm-split-window-in-side-p t)
   ;; window内のminibufferに，一番下のminibufferの内容をコピー
   (setq helm-echo-input-in-header-line t)
+  ;; header-lineの色を他と合わせる
+  ;; 参考
+  ;; https://github.com/emacs-helm/helm/issues/1139
+  ;; http://kei10in.hatenablog.jp/entry/20101101/1288617632
+  ;; 本当はheader-lineではなくhelm-headerを変えたいが，
+  ;; どうもhelm-headerは読んでいない模様
+  (custom-set-faces
+   '(header-line
+     ((t (:foreground "#e1e1e0"
+		      :background "#3a3a3a"
+		      :underline nil
+		      :box nil
+		      :inherit nil
+		      )))
+     )
+   )
 
   ;; 諸々設定
   ;; 上下をつなげる
@@ -275,16 +291,21 @@
   (smartrep-define-key elpy-mode-map "C-c"
 		       '(("C-n" . flycheck-next-error)
 			 ("C-p" . flycheck-previous-error)))
-  ;; 参考
-  ;; https://org-technology.com/posts/emacs-elpy.html
-  (set-face-background 'highlight-indentation-face "#313131")
-  (set-face-background 'highlight-indentation-current-column-face "#777777")
-  (add-hook 'elpy-mode-hook 'highlight-indentation-mode)
-  (add-hook 'elpy-mode-hook 'highlight-indentation-current-column-mode)
   ;; python で auto-complete が起動しないようにする
   ;; 参考
   ;; https://github.com/jorgenschaefer/elpy/issues/813
   (setq ac-modes (delq 'python-mode ac-modes))
+  ;; python-highlight-indentationをdisableする
+  ;; 参考
+  ;; https://github.com/jorgenschaefer/elpy/issues/66#event-48574382
+  (setq elpy-modules (delq 'elpy-module-highlight-indentation elpy-modules))
+  ;; enableしたいときはこっち
+  ;; 参考
+  ;; https://org-technology.com/posts/emacs-elpy.html
+  ;; (set-face-background 'highlight-indentation-face "#313131")
+  ;; (set-face-background 'highlight-indentation-current-column-face "#777777")
+  ;; (add-hook 'elpy-mode-hook 'highlight-indentation-mode)
+  ;; (add-hook 'elpy-mode-hook 'highlight-indentation-current-column-mode)
   )
 
 ;;; flycheck-pos-tip
@@ -419,6 +440,14 @@
   :init
   (global-linum-mode t)
   (setq linum-format "%5d ")
+  ;; faceの色を変更
+  (custom-set-faces
+   '(linum-highlight-face
+     ((t (:foreground "#0d0d0d"
+		      :background "#909090"
+		      )))
+     )
+   )
   )
 (use-package hlinum
   :after linum
@@ -438,6 +467,15 @@
   :init
   (setq vr/engine 'python)
   )
+
+;;; smooth-scroll
+;; C-v M-v による移動がなめらかになる
+;; 参考 : http://qiita.com/ShingoFukuyama/items/429199542c38625c5554
+;; 動作がだいぶ遅くなるのでボツ
+;; (use-package smooth-scroll
+;;   :init
+;;   (smooth-scroll-mode t)
+;;   )
 
 ;;; volatile-highlights
 (use-package volatile-highlights

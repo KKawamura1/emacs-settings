@@ -10,7 +10,7 @@
 ;; installed packages.  Don't delete this line.  If you don't want it,
 ;; just comment it out by adding a semicolon to the start of the line.
 ;; You may delete these explanatory comments.
-;(package-initialize)
+;; (package-initialize)
 
 ;;; パスを通す
 ;; load-path で locate-user-emacs-file に ~/.emacs.d などが入る
@@ -43,13 +43,9 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(ac-ignore-case nil)
+ '(global-linum-mode t)
+ '(linum-format "%5d ")
  '(package-selected-packages
    (quote
     (esup yatex which-key volatile-highlights visual-regexp-steroids use-package undo-tree smartrep smartparens smart-newline session pyenv-mode py-autopep8 powerline popwin markdown-mode magit jedi hlinum helm flycheck-pos-tip flycheck-popup-tip expand-region elpy diminish)))
  '(session-use-package t nil (session)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(linum-highlight-face ((t (:foreground "#0d0d0d" :background "#909090")))))

@@ -18,12 +18,51 @@
 ;;; コード折りたたみ機能
 ;; 参考 : http://ameblo.jp/the-7str-guitarist/entry-11315679803.html
 ;;        http://yohshiy.blog.fc2.com/blog-entry-264.html
+
+;;; goto-line時に行き先がたたまれていたら展開する
+;; 参考
+;; https://www.emacswiki.org/emacs/HideShow
+(defadvice goto-line (after expand-after-goto-line
+			    activate compile)
+  "hideshow-expand affected block when using goto-line in a collapsed buffer"
+  (save-excursion
+    (hs-show-block)))
+;;; コメントだけ折りたたむ
+;; 参考
+;; https://www.emacswiki.org/emacs/HideShow
+(defun hs-hide-all-comments ()
+  "Hide all top level blocks, if they are comments, displaying only first line.
+Move point to the beginning of the line, and run the normal hook
+`hs-hide-hook'.  See documentation for `run-hooks'."
+  (interactive)
+  (hs-life-goes-on
+   (save-excursion
+     (unless hs-allow-nesting
+       (hs-discard-overlays (point-min) (point-max)))
+     (goto-char (point-min))
+     (let ((spew (make-progress-reporter "Hiding all comment blocks..."
+                                         (point-min) (point-max)))
+           (re (concat "\\(" hs-c-start-regexp "\\)")))
+       (while (re-search-forward re (point-max) t)
+         (if (match-beginning 1)
+	     ;; found a comment, probably
+	     (let ((c-reg (hs-inside-comment-p)))
+	       (when (and c-reg (car c-reg))
+		 (if (> (count-lines (car c-reg) (nth 1 c-reg)) 1)
+		     (hs-hide-block-at-point t c-reg)
+		   (goto-char (nth 1 c-reg))))))
+         (progress-reporter-update spew (point)))
+       (progress-reporter-done spew)))
+   (beginning-of-line)
+   (run-hooks 'hs-hide-hook)))
+;; キーバインド
 (defun hs-load-init ()
   (hs-minor-mode 1)
   (bind-keys :map hs-minor-mode-map
-	     ("C-x /" . hs-toggle-hiding)
+	     ("C-t" . hs-toggle-hiding)
 	     ("C-x ," . hs-hide-all)
 	     ("C-x ." . hs-show-all)
+	     ("C-x M-," . hs-hide-all-comments)
 	     )
   ;; diminishする
   ;; 参考
@@ -34,6 +73,7 @@
 (loop for hook in programing-hooks do
       (add-hook hook 'hs-load-init)
       )
+
 
 ;;; 任意行ジャンプ
 ;;; 参考 : http://qiita.com/aita/items/d38ca96d7230d80c5e49
