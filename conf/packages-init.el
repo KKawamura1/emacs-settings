@@ -458,7 +458,7 @@
 ;;; visual-regexp
 (use-package visual-regexp
   :bind (
-	 ("M-%" . vr/query-replace)
+	 ("C-%" . vr/query-replace)
 	 ("C-M-r" . vr/isearch-backward)
 	 ("C-M-s" . vr/isearch-forward)
 	 )
