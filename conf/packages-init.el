@@ -28,7 +28,7 @@
 ;;; use-packageを使う
 (eval-when-compile
   (require 'use-package)
-  (set-variable 'use-package-always-ensure t)
+  (set-variable 'use-package-always-ensure t) ; 常に packageがなければinstall
   )
 
 ;;; ====== use-package に必要なもの ======
@@ -69,8 +69,11 @@
 	 ;; C-c h g でグーグル検索
 	 ("g" . helm-google-suggest)
 	 )
+  :commands helm-flycheck
   :init
-  (require 'helm)			; 依存関係があるので遅延ロードにはしない
+  ;; flycheck
+  (with-eval-after-load 'flycheck
+    (bind-key "C-c C-v" 'helm-flycheck))
   :config
   (require 'helm-config)
   (require 'helm-grep)
@@ -246,16 +249,12 @@
   )
 
 ;;; jedi
-(use-package jedi)
+(use-package jedi
+  :hook python-mode)
 
 ;;; flycheck
 (use-package flycheck
-  :after helm
-  :bind (
-	 ("C-c C-v" . helm-flycheck)
-	 )
-  :init
-  (require 'flycheck)
+  :hook python-mode
   :config
   (set-variable 'flycheck-flake8-maximum-line-length 100)
   )
@@ -269,6 +268,7 @@
 (use-package elpy
   :pin elpy
   :after (jedi flycheck smartrep auto-complete f)
+  :hook python-mode
   :init
   ;; 参考
   ;; https://org-technology.com/posts/emacs-elpy.html
@@ -311,7 +311,8 @@
   )
 
 ;;; flycheck-pos-tip
-(use-package flycheck-popup-tip)
+(use-package flycheck-popup-tip
+  :after flycheck)
 (use-package flycheck-pos-tip
   :after (flycheck flycheck-popup-tip)
   :config
@@ -323,6 +324,7 @@
 
 ;;; py-autopep8
 (use-package py-autopep8
+  :hook python-mode
   ;; 参考
   ;; https://github.com/paetzke/py-autopep8.el
   :config
@@ -331,7 +333,12 @@
   )
 
 ;;; cc-mode
-(use-package cc-mode)
+(use-package cc-mode
+  :mode ("\\.cpp\\'"
+	 "\\.hpp\\'"
+	 "\\.c\\'"
+	 "\\.h\\'")
+  )
 
 ;;; yatex
 (use-package yatex
@@ -456,8 +463,8 @@
 (use-package visual-regexp
   :bind (
 	 ("M-%" . vr/query-replace)
-	 ("C-M-r" . vr/isearch-backward)
-	 ("C-M-s" . vr/isearch-forward)
+	 ("C-r" . vr/isearch-backward)
+	 ("C-s" . vr/isearch-forward)
 	 )
   )
 (use-package visual-regexp-steroids
@@ -481,36 +488,38 @@
   ;; 参考
   ;; https://github.com/k-talo/volatile-highlights.el/blob/master/README-ja.org
   (volatile-highlights-mode t)
-  :after undo-tree
-  ;; undo-treeをサポート
-  (vhl/define-extension 'undo-tree 'undo-tree-yank 'undo-tree-move)
-  (vhl/install-extension 'undo-tree)
+  (with-eval-after-load 'undo-tree
+    ;; undo-treeをサポート
+    (vhl/define-extension 'undo-tree 'undo-tree-yank 'undo-tree-move)
+    (vhl/install-extension 'undo-tree)
+    )
   )
 
 ;;; ====== 特に使用を意識しないもの ======
 
 ;;; session
 ;; desktop.el でよくない?w
-;; (use-package session
-;;   :config
-;;   ;; 参考
-;;   ;; http://d.hatena.ne.jp/whitypig/20110331/1301521329
-;;   (set-variable 'session-save-file-coding-system 'utf-8-unix)
-;;   (set-variable 'session-save-file (expand-file-name "~/.emacs.d/.session/.session.ntemacs"))
-;;   (set-variable 'session-initialize '(session places))
-;;   (set-variable 'session-globals-max-size 1024)
-;;   (set-variable 'session-globals-max-string (* 1024 1024))
-;;   (set-variable 'session-globals-include '((kill-ring 512)
-;; 				  (session-file-alist 512)
-;; 				  (file-name-history 512)
-;; 				  ;; TODO make it be able to use shell-command-history
-;; 				  ;; keyword: comint-input-ring
-;; 				  ;; (shell-command-history 512)
-;; 				  (tags-table-set-list 128)))
-;;   (add-hook 'after-init-hook 'session-initialize)
-;;   ;; Save session info every 15 minutes
-;;   (set-variable 'my-timer-for-session-save-session (run-at-time t (* 15 60) 'session-save-session))
-;;   )
+(use-package session
+  :disabled t
+  :config
+  ;; 参考
+  ;; http://d.hatena.ne.jp/whitypig/20110331/1301521329
+  (set-variable 'session-save-file-coding-system 'utf-8-unix)
+  (set-variable 'session-save-file (expand-file-name "~/.emacs.d/.session/.session.ntemacs"))
+  (set-variable 'session-initialize '(session places))
+  (set-variable 'session-globals-max-size 1024)
+  (set-variable 'session-globals-max-string (* 1024 1024))
+  (set-variable 'session-globals-include '((kill-ring 512)
+				  (session-file-alist 512)
+				  (file-name-history 512)
+				  ;; TODO make it be able to use shell-command-history
+				  ;; keyword: comint-input-ring
+				  ;; (shell-command-history 512)
+				  (tags-table-set-list 128)))
+  (add-hook 'after-init-hook 'session-initialize)
+  ;; Save session info every 15 minutes
+  (set-variable 'my-timer-for-session-save-session (run-at-time t (* 15 60) 'session-save-session))
+  )
 
 ;;; desktop
 ;; コピーした内容やカーソル位置などを自動保存してくれる
@@ -557,10 +566,12 @@
 ;;; emacsclient
 ;; 一度起動したらずっとemacsが残ってくれる
 ;; 参考: http://futurismo.biz/archives/1273
-;; (use-package server
-;;   :config
-;;   (unless (server-running-p) (server-start))
-;;   )
+;; 特に使ってなかったので消去
+(use-package server
+  :disabled t
+  :config
+  (unless (server-running-p) (server-start))
+  )
 
 ;;; libressl
 ;; emacs on macがうまくsecurityの認証をできないので
@@ -575,4 +586,6 @@
 ;;; esup
 ;; 各起動処理の読み込み時間がわかる
 ;; 参考: http://emacs.rubikitch.com/esup/
-(use-package esup)
+(use-package esup
+  :disabled t
+  )
