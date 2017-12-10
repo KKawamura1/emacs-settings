@@ -260,15 +260,17 @@
 ;;     flake8 importmagic yapf autopep8 ipdb jedi ipython
 ;; also you must use pyenv & pyenv-virtualenv.
 ;; see: https://smythp.com/emacs/python/2016/04/27/pyenv-elpy.html
+(use-package f)
 (use-package elpy
   :pin elpy
-  :after (jedi flycheck smartrep auto-complete)
+  :after (jedi flycheck smartrep auto-complete f)
   :bind (
 	 ("<RET>" . newline-and-indent)
 	 )
   :init
   ;; 参考
   ;; https://org-technology.com/posts/emacs-elpy.html
+  ;; f-traverse-upwardsのためにf.elが必要
   (defun ssbb-pyenv-hook ()
     "Automatically activates pyenv version if .python-version file exists."
     (f-traverse-upwards
@@ -278,8 +280,8 @@
 	     (pyenv-mode-set (s-trim (f-read-text pyenv-version-path 'utf-8))))))))
 
   (add-hook 'find-file-hook 'ssbb-pyenv-hook)
-  :config
   (elpy-enable)
+  :config
   ;; 参考
   ;; https://org-technology.com/posts/emacs-elpy.html
   (elpy-use-ipython)
