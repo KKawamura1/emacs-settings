@@ -111,4 +111,9 @@ Move point to the beginning of the line, and run the normal hook
 ;; (global-set-key [?\C-?])
 ;; (define-key key-translation-map [?\C-h] [?\C-?])
 
+;; 改行をnewline-and-indentにする
+;; python以外ではsmart-newlineに上書きしてもらう
+(bind-key "<return>" 'newline-and-indent)
+(bind-key "C-m" 'newline-and-indent)
+
 ;;; operability-init.el ends here

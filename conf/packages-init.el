@@ -264,9 +264,6 @@
 (use-package elpy
   :pin elpy
   :after (jedi flycheck smartrep auto-complete f)
-  :bind (
-	 ("<RET>" . newline-and-indent)
-	 )
   :init
   ;; 参考
   ;; https://org-technology.com/posts/emacs-elpy.html
@@ -453,12 +450,13 @@
 ;;; visual-regexp
 (use-package visual-regexp
   :bind (
-	 ("C-%" . vr/query-replace)
+	 ("M-%" . vr/query-replace)
 	 ("C-M-r" . vr/isearch-backward)
 	 ("C-M-s" . vr/isearch-forward)
 	 )
   )
 (use-package visual-regexp-steroids
+  :after visual-regexp
   :config
   (set-variable 'vr/engine 'python)
   )
