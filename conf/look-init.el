@@ -18,12 +18,14 @@
 (set-variable 'show-paren-style 'mixed)
 
 ;;; 色の設定
+;; 参考
+;; http://yuelab82.hatenablog.com/entry/terminal_now
 ;; - カラーテーマ
 (load-theme 'misterioso t)
 ;; - linum
 ;;(custom-set-faces
 ;; '(linum ((t (:inherit (shadow default) :background "#333333")))))
 ;; - hlinum
-(custom-set-faces
- '(linum-highlight-face ((t (:foreground "#0d0d0d"
-			     :background "#909090")))))
+;; (set-face-attribute 'linum-highlight-face nil
+;; 		    :foreground "#0d0d0d"
+;; 		    :background "#909090")

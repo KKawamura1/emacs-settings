@@ -102,16 +102,12 @@
   ;; http://kei10in.hatenablog.jp/entry/20101101/1288617632
   ;; 本当はheader-lineではなくhelm-headerを変えたいが，
   ;; どうもhelm-headerは読んでいない模様
-  (custom-set-faces
-   '(header-line
-     ((t (:foreground "#e1e1e0"
+  (set-face-attribute 'header-line nil
+		      :foreground "#e1e1e0"
 		      :background "#3a3a3a"
 		      :underline nil
 		      :box nil
-		      :inherit nil
-		      )))
-     )
-   )
+		      :inherit nil)
 
   ;; 諸々設定
   ;; 上下をつなげる
@@ -441,19 +437,15 @@
   :config
   (global-linum-mode t)
   (set-variable 'linum-format "%5d ")
-  ;; faceの色を変更
-  (custom-set-faces
-   '(linum-highlight-face
-     ((t (:foreground "#0d0d0d"
-		      :background "#909090"
-		      )))
-     )
-   )
   )
 (use-package hlinum
   :after linum
   :config
   (hlinum-activate)
+  ;; faceの色を変更
+  (set-face-attribute 'linum-highlight-face nil
+		      :foreground "#0d0d0d"
+		      :background "#909090")
   )
 
 ;;; visual-regexp
