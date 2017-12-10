@@ -243,18 +243,17 @@
 ;;; pyenv-mode
 (use-package pyenv-mode
   :pin melpa
-  :after elpy
   :config
   (pyenv-mode)
   )
 
 ;;; jedi
 (use-package jedi
-  :hook python-mode)
+  :after flycheck
+  )
 
 ;;; flycheck
 (use-package flycheck
-  :hook python-mode
   :config
   (set-variable 'flycheck-flake8-maximum-line-length 100)
   )
@@ -267,8 +266,7 @@
 (use-package f)
 (use-package elpy
   :pin elpy
-  :after (jedi flycheck smartrep auto-complete f)
-  :hook python-mode
+  :after (jedi flycheck smartrep auto-complete pyenv-mode f)
   :init
   ;; 参考
   ;; https://org-technology.com/posts/emacs-elpy.html
@@ -463,8 +461,8 @@
 (use-package visual-regexp
   :bind (
 	 ("M-%" . vr/query-replace)
-	 ("C-r" . vr/isearch-backward)
-	 ("C-s" . vr/isearch-forward)
+	 ("C-M-r" . vr/isearch-backward)
+	 ("C-M-s" . vr/isearch-forward)
 	 )
   )
 (use-package visual-regexp-steroids
