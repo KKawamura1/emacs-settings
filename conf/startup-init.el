@@ -35,9 +35,21 @@
 ;; inhibit startup message
 ;; (setq inhibit-startup-message t)
 
-;;; バックアップ
-;; 自動作成されるバックアップファイルはこのフォルダに作る
-(setq backup-directory-alist '(("." . "~/.emacs.d/backup")))
+;;; 自動作成ファイルのpath指定
+;; 参考
+;; https://masutaka.net/chalow/2014-05-11-1.html
+;; http://emacs.rubikitch.com/initsplit/
+;; https://emacs.stackexchange.com/questions/7602/what-is-the-point-of-quote-with-single-argument-and-comma-quote-arg
+(custom-set-variables
+ ;; バックアップファイル
+ '(backup-directory-alist `(("." . ,(locate-user-emacs-file ".backup/"))))
+ ;; オートセーブファイル
+ '(auto-save-file-name-transforms `(("\\([^/]*/\\)*\\([^/]*\\)$" ,(locate-user-emacs-file ".temp/") t)))
+ ;; セッションファイル
+ '(auto-save-list-file-prefix (locate-user-emacs-file ".temp/.saves-"))
+ ;; custom-set-variables ファイル
+ '(custom-file (locate-user-emacs-file ".custom-file.el"))
+ )
 
 ;;; コードスタイル
 ;; 保存時，文末の空白を削除

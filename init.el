@@ -14,7 +14,6 @@
 
 ;;; パスを通す
 ;; load-path で locate-user-emacs-file に ~/.emacs.d などが入る
-
 (when load-file-name
   (setq user-emacs-directory (file-name-directory load-file-name)))
 
@@ -33,19 +32,3 @@
 (load "operability-init")
 ;; 見た目設定
 (load "look-init")
-
-
-;;; 以下，auto-written
-;;;;;;;;;;;;;;;;;;;;;;;;;;
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(ac-ignore-case nil)
- '(global-linum-mode t)
- '(linum-format "%5d ")
- '(package-selected-packages
-   (quote
-    (esup yatex which-key volatile-highlights visual-regexp-steroids use-package undo-tree smartrep smartparens smart-newline session pyenv-mode py-autopep8 powerline popwin markdown-mode magit jedi hlinum helm flycheck-pos-tip flycheck-popup-tip expand-region elpy diminish)))
- '(session-use-package t nil (session)))
