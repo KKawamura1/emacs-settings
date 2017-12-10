@@ -69,6 +69,8 @@
 	 ;; C-c h g でグーグル検索
 	 ("g" . helm-google-suggest)
 	 )
+  :init
+  (require 'helm)			; 依存関係があるので遅延ロードにはしない
   :config
   (require 'helm-config)
   (require 'helm-grep)
@@ -223,15 +225,16 @@
 	 ("C-x m" . magit-status)
 	 ("C-c l" . magit-blame)
 	 )
+  :init
+  ;; vc-modeとオサラバ
+  (set-variable 'vc-handled-backends '())
+  (eval-after-load "vc" '(remove-hook 'find-file-hooks 'vc-find-file-hook))
   :config
   ;;; auto-revert-mode
   ;; git checkoutとかした時にemacsのbufferの内容を強制的に変更するかどうか
   ;; 参考: https://github.com/magit/magit/issues/1783
   ;;       https://github.com/magit/magit/issues/1809
   (set-variable 'magit-auto-revert-mode t)
-  ;; vc-modeとオサラバ
-  (set-variable 'vc-handled-backends '())
-  (eval-after-load "vc" '(remove-hook 'find-file-hooks 'vc-find-file-hook))
   )
 
 ;;; pyenv-mode
@@ -251,6 +254,8 @@
   :bind (
 	 ("C-c C-v" . helm-flycheck)
 	 )
+  :init
+  (require 'flycheck)
   :config
   (set-variable 'flycheck-flake8-maximum-line-length 100)
   )
@@ -277,10 +282,10 @@
 	     (pyenv-mode-set (s-trim (f-read-text pyenv-version-path 'utf-8))))))))
 
   (add-hook 'find-file-hook 'ssbb-pyenv-hook)
-  (elpy-enable)
   :config
   ;; 参考
   ;; https://org-technology.com/posts/emacs-elpy.html
+  (elpy-enable)
   (elpy-use-ipython)
   (set-variable 'elpy-rpc-backend "jedi")
   (remove-hook 'elpy-modules 'elpy-module-flymake)
