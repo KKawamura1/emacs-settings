@@ -4,7 +4,8 @@
 
 ;;; enable font-lock
 ;; コメントや文字列などに色をつける
-(when(fboundp 'global-font-lock-mode)(global-font-lock-mode t))
+(when (fboundp 'global-font-lock-mode)
+  (global-font-lock-mode t))
 (set-variable 'font-lock-maximum-decoration t)
 
 ;;; highlight selected region
