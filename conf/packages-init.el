@@ -400,10 +400,14 @@ Move point to the beginning of the line, and run the normal hook
 
 ;;; cc-mode
 (use-package cc-mode
-  :mode ("\\.cpp\\'"
-	 "\\.hpp\\'"
-	 "\\.c\\'"
-	 "\\.h\\'")
+  :mode (
+	 ("\\.cpp\\'" . c++-mode)
+	 ("\\.cc\\'" . c++-mode)
+	 ("\\.hpp\\'" . c++-mode)
+	 ("\\.hh\\'" . c++-mode)
+	 ("\\.c\\'" . c-mode)
+	 ("\\.h\\'" . c-mode)
+	 )
   )
 
 ;;; yatex
@@ -605,7 +609,7 @@ Move point to the beginning of the line, and run the normal hook
   :config
   (desktop-save-mode 1)
   ;; 保存場所を指定
-  (let ((desktop-directory (locate-user-emacs-file ".desktop/")))
+  (let ((desktop-directory (locate-user-emacs-file ".cache/desktop/")))
     (unless (file-directory-p desktop-directory) (mkdir desktop-directory))
     (add-to-list 'desktop-path desktop-directory)
     (set-variable 'desktop-dirname desktop-directory)

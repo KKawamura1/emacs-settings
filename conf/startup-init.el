@@ -36,21 +36,32 @@
 ;; http://emacs.rubikitch.com/initsplit/
 ;; https://emacs.stackexchange.com/questions/7602/what-is-the-point-of-quote-with-single-argument-and-comma-quote-arg
 ;; https://qiita.com/kawabata@github/items/ac503ea104eac3eea602#custom-set-variables-%E8%A8%AD%E5%AE%9A%E9%83%A8%E5%88%86%E3%81%AE%E5%88%86%E9%9B%A2
-;; バックアップファイル
-(set-variable
- 'backup-directory-alist `(("." . ,(locate-user-emacs-file ".cache/backup/"))))
-;; オートセーブファイル
-(set-variable
- 'auto-save-file-name-transforms `(("\\([^/]*/\\)*\\([^/]*\\)$" ,(locate-user-emacs-file ".cache/auto-save/") t)))
-;; セッションファイル
-(set-variable
- 'auto-save-list-file-prefix (locate-user-emacs-file ".cache/auto-save-list/saves-"))
-;; custom-set-variables ファイル
-(set-variable
- 'custom-file (locate-user-emacs-file "custom-file.el"))
-;; recentf ファイル
-(set-variable
- 'recentf-save-file (locate-user-emacs-file ".cache/recentf"))
+(let* (
+      (cache-dir (locate-user-emacs-file ".cache/"))
+      (backup-dir (concat cache-dir "backup/"))
+      (auto-save-dir (concat cache-dir "auto-save/"))
+      (auto-save-list-dir (concat cache-dir "auto-save-list/"))
+      )
+  (unless (file-directory-p cache-dir) (mkdir cache-dir))
+  (unless (file-directory-p backup-dir) (mkdir backup-dir))
+  (unless (file-directory-p auto-save-dir) (mkdir auto-save-dir))
+  (unless (file-directory-p auto-save-list-dir) (mkdir auto-save-list-dir))
+  ;; バックアップファイル
+  (set-variable
+   'backup-directory-alist `(("." . ,backup-dir)))
+  ;; オートセーブファイル
+  (set-variable
+   'auto-save-file-name-transforms `(("\\([^/]*/\\)*\\([^/]*\\)$" ,auto-save-dir t)))
+  ;; セッションファイル
+  (set-variable
+   'auto-save-list-file-prefix (concat auto-save-list-dir "saves-"))
+  ;; custom-set-variables ファイル
+  (set-variable
+   'custom-file (locate-user-emacs-file "custom-file.el"))
+  ;; recentf ファイル
+  (set-variable
+   'recentf-save-file (concat cache-dir "recentf"))
+  )
 
 ;;; コードスタイル
 ;; 保存時，文末の空白を削除
