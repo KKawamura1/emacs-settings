@@ -8,11 +8,11 @@
 # 設定ファイル
 !conf/
 
-# el-get recipes
-!el-get-user/
-
 # 外部elisp
 !site-lisp/
+
+# custom-file
+!custom-file.el
 
 # このファイル自身
 !.gitignore

@@ -190,7 +190,8 @@
   (ac-set-trigger-key "TAB")
   (set-variable 'ac-use-menu-map t)       ;; 補完メニュー表示時にC-n/C-pで補完候補選択
   (set-variable 'ac-use-fuzzy t)          ;; 曖昧マッチ
-  (custom-set-variables '(ac-ignore-case nil))
+  (set-variable 'ac-ignore-case nil)
+  (set-variable 'ac-comphist-file (locate-user-emacs-file ".cache/ac-comphist.dat"))
   )
 
 ;;; smart-newline
@@ -606,7 +607,17 @@ Move point to the beginning of the line, and run the normal hook
    ;; idleになってからsessionを保存するまでの時間を指定
    '(desktop-auto-save-timeout 10)
    )
-)
+  )
+
+;;; savehist
+;; minibufferの履歴を保存してくれる
+(use-package savehist
+  :config
+  (savehist-mode 1)
+  (add-to-list 'savehist-additional-variables 'foo)
+  (set-variable 'savehist-file (locate-user-emacs-file ".cache/savehist"))
+  )
+
 
 ;;; smartrep
 (use-package smartrep

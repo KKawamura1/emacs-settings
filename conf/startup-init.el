@@ -38,16 +38,19 @@
 ;; https://qiita.com/kawabata@github/items/ac503ea104eac3eea602#custom-set-variables-%E8%A8%AD%E5%AE%9A%E9%83%A8%E5%88%86%E3%81%AE%E5%88%86%E9%9B%A2
 ;; バックアップファイル
 (set-variable
- 'backup-directory-alist `(("." . ,(locate-user-emacs-file ".backup/"))))
+ 'backup-directory-alist `(("." . ,(locate-user-emacs-file ".cache/backup/"))))
 ;; オートセーブファイル
 (set-variable
- 'auto-save-file-name-transforms `(("\\([^/]*/\\)*\\([^/]*\\)$" ,(locate-user-emacs-file ".temp/") t)))
+ 'auto-save-file-name-transforms `(("\\([^/]*/\\)*\\([^/]*\\)$" ,(locate-user-emacs-file ".cache/auto-save/") t)))
 ;; セッションファイル
 (set-variable
- 'auto-save-list-file-prefix (locate-user-emacs-file ".temp/.saves-"))
+ 'auto-save-list-file-prefix (locate-user-emacs-file ".cache/auto-save-list/saves-"))
 ;; custom-set-variables ファイル
 (set-variable
- 'custom-file (locate-user-emacs-file ".custom-file.el"))
+ 'custom-file (locate-user-emacs-file "custom-file.el"))
+;; recentf ファイル
+(set-variable
+ 'recentf-save-file (locate-user-emacs-file ".cache/recentf"))
 
 ;;; コードスタイル
 ;; 保存時，文末の空白を削除
