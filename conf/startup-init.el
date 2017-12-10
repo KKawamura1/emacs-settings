@@ -5,7 +5,7 @@
 ;;; garbage collection settings
 ;; ガベージコレクタの発動条件のメモリ上限を引き上げて快適にする
 ;; 参考: http://nagayasu-shinya.com/emacs-bc-cons-threshold/
-(setq gc-cons-threshold (* 128 1024 1024)) ;; かなりデカい値
+(set-variable 'gc-cons-threshold (* 128 1024 1024)) ;; かなりデカい値
 
 ;;; フォント設定
 ;; use UTF-8
@@ -15,7 +15,7 @@
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
 (set-buffer-file-coding-system 'utf-8)
-(setq buffer-file-coding-system 'utf-8)
+(set-variable 'buffer-file-coding-system 'utf-8)
 (set-default-coding-systems 'utf-8)
 
 ;;; ウィンドウ設定
@@ -40,16 +40,19 @@
 ;; https://masutaka.net/chalow/2014-05-11-1.html
 ;; http://emacs.rubikitch.com/initsplit/
 ;; https://emacs.stackexchange.com/questions/7602/what-is-the-point-of-quote-with-single-argument-and-comma-quote-arg
-(custom-set-variables
- ;; バックアップファイル
- '(backup-directory-alist `(("." . ,(locate-user-emacs-file ".backup/"))))
- ;; オートセーブファイル
- '(auto-save-file-name-transforms `(("\\([^/]*/\\)*\\([^/]*\\)$" ,(locate-user-emacs-file ".temp/") t)))
- ;; セッションファイル
- '(auto-save-list-file-prefix (locate-user-emacs-file ".temp/.saves-"))
- ;; custom-set-variables ファイル
- '(custom-file (locate-user-emacs-file ".custom-file.el"))
- )
+;; https://qiita.com/kawabata@github/items/ac503ea104eac3eea602#custom-set-variables-%E8%A8%AD%E5%AE%9A%E9%83%A8%E5%88%86%E3%81%AE%E5%88%86%E9%9B%A2
+;; バックアップファイル
+(set-variable
+ 'backup-directory-alist `(("." . ,(locate-user-emacs-file ".backup/"))))
+;; オートセーブファイル
+(set-variable
+ 'auto-save-file-name-transforms `(("\\([^/]*/\\)*\\([^/]*\\)$" ,(locate-user-emacs-file ".temp/") t)))
+;; セッションファイル
+(set-variable
+ 'auto-save-list-file-prefix (locate-user-emacs-file ".temp/.saves-"))
+;; custom-set-variables ファイル
+(set-variable
+ 'custom-file (locate-user-emacs-file ".custom-file.el"))
 
 ;;; コードスタイル
 ;; 保存時，文末の空白を削除
@@ -57,7 +60,7 @@
 
 ;;; Warning: 'mapcar' called for effect; を防ぐ
 ;; 参考: http://d.hatena.ne.jp/kitokitoki/20100425/p1
-(setq byte-compile-warnings '(free-vars unresolved callargs redefine obsolete noruntime cl-functions interactive-only make-local))
+(set-variable 'byte-compile-warnings '(free-vars unresolved callargs redefine obsolete noruntime cl-functions interactive-only make-local))
 
 ;;; 拡張子設定
 ;; 参考: http://qiita.com/tadsan/items/a21c268021b46b8a6b33

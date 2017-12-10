@@ -90,7 +90,7 @@ Move point to the beginning of the line, and run the normal hook
 ;;;        https://coderwall.com/p/posneq/cooperation-with-the-clipboard-and-emacs-window-no-window
 ;; for GUI
 (cond (window-system
-       (setq x-select-enable-clipboard t)
+       (set-variable 'x-select-enable-clipboard t)
        ))
 ;; for CUI
 (defun my-cut-function (text &optional rest)
@@ -101,8 +101,8 @@ Move point to the beginning of the line, and run the normal hook
 (defun my-paste-function ()
   (shell-command-to-string "pbpaste"))
 (when (eq system-type 'darwin)
-  (setq interprogram-cut-function 'my-cut-function)
-  (setq interprogram-paste-function 'my-paste-function))
+  (set-variable 'interprogram-cut-function 'my-cut-function)
+  (set-variable 'interprogram-paste-function 'my-paste-function))
 
 ;;; key binding
 ;; C-h をBackspaceにする

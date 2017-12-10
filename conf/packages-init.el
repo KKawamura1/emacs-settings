@@ -12,7 +12,7 @@
 ;; 参考
 ;; http://www.wagavulin.jp/entry/2016/07/04/211631
 (require 'package)
-(setq package-archives '(
+(set-variable 'package-archives '(
 			 ("melpa" . "http://melpa.org/packages/")
 			 ("melpa-stable" . "http://stable.melpa.org/packages/")
 			 ;; ("melpa-milkbox" . "http://melpa.milkbox.net/packages/")
@@ -28,7 +28,7 @@
 ;;; use-packageを使う
 (eval-when-compile
   (require 'use-package)
-  (setq use-package-always-ensure t)
+  (set-variable 'use-package-always-ensure t)
   )
 
 ;;; ====== use-package に必要なもの ======
@@ -69,15 +69,15 @@
 	 ;; C-c h g でグーグル検索
 	 ("g" . helm-google-suggest)
 	 )
-  :init
+  :config
   (require 'helm-config)
   (require 'helm-grep)
   ;; helmでググる
   ;; C-c h g でグーグル検索できる
   ;; そのときにできればcurlを使う
-  (setq browse-url-generic-program "google-chrome")
+  (set-variable 'browse-url-generic-program "google-chrome")
   (when (executable-find "curl")
-    (setq helm-google-suggest-use-curl-p t))
+    (set-variable 'helm-google-suggest-use-curl-p t))
   ;; helm bufferを現在のwindowで開き，minibufferも現在のウインドウのminibufferにする
   ;; windowが上の方にある場合でも，一番下を見る必要がなくなる
   ;; 参考: https://www.reddit.com/r/emacs/comments/3asbyn/new_and_very_useful_helm_feature_enter_search/
@@ -93,9 +93,9 @@
   ;; と思ったけど別に隠さなくてもよくない?w
   ;; (add-hook 'helm-minibuffer-set-up-hook 'helm-hide-minibuffer-maybe)
   ;; windowが複数あるときに，current window内にhelmを開く
-  (setq helm-split-window-in-side-p t)
+  (set-variable 'helm-split-window-in-side-p t)
   ;; window内のminibufferに，一番下のminibufferの内容をコピー
-  (setq helm-echo-input-in-header-line t)
+  (set-variable 'helm-echo-input-in-header-line t)
   ;; header-lineの色を他と合わせる
   ;; 参考
   ;; https://github.com/emacs-helm/helm/issues/1139
@@ -116,25 +116,25 @@
   ;; 諸々設定
   ;; 上下をつなげる
   ;; helm-find-fileなどで次セクションに行けないのでやめる
-  ;; (setq helm-move-to-line-cycle-in-source t)
+  ;; (set-variable 'helm-move-to-line-cycle-in-source t)
   ;; M-<next>で何行動くかを指定する
-  (setq helm-scroll-amount 8)
+  (set-variable 'helm-scroll-amount 8)
   ;; よくわからんものたち
-  (setq helm-ff-search-library-in-sexp t
-	helm-ff-file-name-history-use-recentf t)
+  (set-variable 'helm-ff-search-library-in-sexp t)
+  (set-variable 'helm-ff-file-name-history-use-recentf t)
 
   ;; Autoresize
   ;; Helmバッファのサイズを候補の数に応じて自動的に変更する
   ;; 動的に変更されるわけじゃないので要らない
-  ;; (setq helm-autoresize-max-height 0)
-  ;; (setq helm-autoresize-min-height 20)
+  ;; (set-variable 'helm-autoresize-max-height 0)
+  ;; (set-variable 'helm-autoresize-min-height 20)
   ;; (helm-autoresize-mode 1)
 
-  (setq helm-M-x-fuzzy-match t)
-  (setq helm-buffers-fuzzy-matching t
-	helm-recentf-fuzzy-match    t)
-  (setq helm-semantic-fuzzy-match t
-	helm-imenu-fuzzy-match    t)
+  (set-variable 'helm-M-x-fuzzy-match t)
+  (set-variable 'helm-buffers-fuzzy-matching t)
+  (set-variable 'helm-recentf-fuzzy-match t)
+  (set-variable 'helm-semantic-fuzzy-match t)
+  (set-variable 'helm-imenu-fuzzy-match t)
   (add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
   (helm-mode 1)
   )
@@ -145,7 +145,7 @@
   :bind (
 	 ("M-/" . undo-tree-redo)
 	 )
-  :init
+  :config
   (global-undo-tree-mode t)
   )
 
@@ -155,14 +155,14 @@
   :bind (
 	 ("M-@" . er/expand-region)
 	 )
-  :init
+  :config
   (transient-mark-mode t)
   )
 
 ;;; smartparens
 (use-package smartparens
   :diminish smartparens-mode
-  :init
+  :config
   (require 'smartparens-config)
   ;; 余計な機能を削除
   ;; 参考
@@ -177,7 +177,7 @@
 (use-package auto-complete
   :pin melpa
   :diminish auto-complete-mode
-  :init
+  :config
   ;; 参考
   ;; http://keisanbutsuriya.hateblo.jp/entry/2015/02/08/175005
   (require 'auto-complete-config)
@@ -187,15 +187,15 @@
   (add-to-list 'ac-modes 'org-mode)
   (add-to-list 'ac-modes 'yatex-mode)
   (ac-set-trigger-key "TAB")
-  (setq ac-use-menu-map t)       ;; 補完メニュー表示時にC-n/C-pで補完候補選択
-  (setq ac-use-fuzzy t)          ;; 曖昧マッチ
+  (set-variable 'ac-use-menu-map t)       ;; 補完メニュー表示時にC-n/C-pで補完候補選択
+  (set-variable 'ac-use-fuzzy t)          ;; 曖昧マッチ
   (custom-set-variables '(ac-ignore-case nil))
   )
 
 ;;; smart-newline
 (use-package smart-newline
   :diminish smart-newline-mode
-  :init
+  :config
   ;; pythonではインデントがずれるので使用しない
   (loop for hook in programing-hooks-without-python
 	do (add-hook hook 'smart-newline-mode))
@@ -213,7 +213,7 @@
 ;; 参考
 ;; http://d.hatena.ne.jp/rubikitch/20090219/sequential_command
 (use-package sequential-command
-  :init
+  :config
   (require 'sequential-command-config)
   (bind-key "C-a" 'seq-home)
   (bind-key "C-e" 'seq-end)
@@ -227,14 +227,14 @@
 	 ("C-x m" . magit-status)
 	 ("C-c l" . magit-blame)
 	 )
-  :init
+  :config
   ;;; auto-revert-mode
   ;; git checkoutとかした時にemacsのbufferの内容を強制的に変更するかどうか
   ;; 参考: https://github.com/magit/magit/issues/1783
   ;;       https://github.com/magit/magit/issues/1809
-  (setq magit-auto-revert-mode t)
+  (set-variable 'magit-auto-revert-mode t)
   ;; vc-modeとオサラバ
-  (setq vc-handled-backends '())
+  (set-variable 'vc-handled-backends '())
   (eval-after-load "vc" '(remove-hook 'find-file-hooks 'vc-find-file-hook))
   )
 
@@ -242,7 +242,7 @@
 (use-package pyenv-mode
   :pin melpa
   :after elpy
-  :init
+  :config
   (pyenv-mode)
   )
 
@@ -255,8 +255,8 @@
   :bind (
 	 ("C-c C-v" . helm-flycheck)
 	 )
-  :init
-  (setq flycheck-flake8-maximum-line-length 100)
+  :config
+  (set-variable 'flycheck-flake8-maximum-line-length 100)
   )
 
 ;;; elpy
@@ -273,7 +273,6 @@
   :init
   ;; 参考
   ;; https://org-technology.com/posts/emacs-elpy.html
-  (elpy-enable)
   (defun ssbb-pyenv-hook ()
     "Automatically activates pyenv version if .python-version file exists."
     (f-traverse-upwards
@@ -283,24 +282,25 @@
 	     (pyenv-mode-set (s-trim (f-read-text pyenv-version-path 'utf-8))))))))
 
   (add-hook 'find-file-hook 'ssbb-pyenv-hook)
+  :config
+  (elpy-enable)
   ;; 参考
   ;; https://org-technology.com/posts/emacs-elpy.html
   (elpy-use-ipython)
-  (setq elpy-rpc-backend "jedi")
+  (set-variable 'elpy-rpc-backend "jedi")
   (remove-hook 'elpy-modules 'elpy-module-flymake)
   (add-hook 'elpy-mode-hook 'flycheck-mode)
-  :config
   (smartrep-define-key elpy-mode-map "C-c"
 		       '(("C-n" . flycheck-next-error)
 			 ("C-p" . flycheck-previous-error)))
   ;; python で auto-complete が起動しないようにする
   ;; 参考
   ;; https://github.com/jorgenschaefer/elpy/issues/813
-  (setq ac-modes (delq 'python-mode ac-modes))
+  (set-variable 'ac-modes (delq 'python-mode ac-modes))
   ;; python-highlight-indentationをdisableする
   ;; 参考
   ;; https://github.com/jorgenschaefer/elpy/issues/66#event-48574382
-  (setq elpy-modules (delq 'elpy-module-highlight-indentation elpy-modules))
+  (set-variable 'elpy-modules (delq 'elpy-module-highlight-indentation elpy-modules))
   ;; enableしたいときはこっち
   ;; 参考
   ;; https://org-technology.com/posts/emacs-elpy.html
@@ -314,7 +314,7 @@
 (use-package flycheck-popup-tip)
 (use-package flycheck-pos-tip
   :after (flycheck flycheck-popup-tip)
-  :init
+  :config
   (add-hook 'flycheck-mode-hook 'flycheck-popup-tip-mode)
   (if (display-graphic-p)
       (flycheck-pos-tip-mode)
@@ -325,10 +325,9 @@
 (use-package py-autopep8
   ;; 参考
   ;; https://github.com/paetzke/py-autopep8.el
-  :init
-  (add-hook 'python-mode-hook 'py-autopep8-enable-on-save)
   :config
-  (setq py-autopep8-options '("--max-line-length=100"))
+  (add-hook 'python-mode-hook 'py-autopep8-enable-on-save)
+  (set-variable 'py-autopep8-options '("--max-line-length=100"))
   )
 
 ;;; cc-mode
@@ -343,17 +342,17 @@
 	 ("\\.ltx\\'" . yatex-mode)
 	 ("\\.sty\\'" . yatex-mode)
 	 )
-  :init
+  :config
   ;; set YaTeX coding system
-  (setq YaTeX-kanji-code 4) ; UTF-8 の設定
+  (set-variable 'YaTeX-kanji-code 4) ; UTF-8 の設定
   (add-hook 'yatex-mode-hook
 	    '(lambda ()
-	       (setq YaTeX-use-AMS-LaTeX t) ; align で数式モードになる
-	       (setq YaTeX-use-hilit19 nil
-		     YateX-use-font-lock t)
-	       (setq tex-command "latexmk") ; typeset command
-	       (setq dvi2-command "open -a /Applications/Preview.app") ; preview command
-	       (setq tex-pdfview-command "open -a /Applications/Preview.app")))
+	       (set-variable 'YaTeX-use-AMS-LaTeX t) ; align で数式モードになる
+	       (set-variable 'YaTeX-use-hilit19 nil)
+	       (set-variable 'YateX-use-font-lock t)
+	       (set-variable 'tex-command "latexmk") ; typeset command
+	       (set-variable 'dvi2-command "open -a /Applications/Preview.app") ; preview command
+	       (set-variable 'tex-pdfview-command "open -a /Applications/Preview.app")))
   )
 
 ;;; markdown-mode
@@ -370,7 +369,7 @@
 
 ;;; ====== 起動時のみ使うもの ======
 (use-package init-open-recentf
-  :init
+  :config
   (init-open-recentf)
   )
 
@@ -378,7 +377,7 @@
 ;;; powerline
 (use-package powerline
   :pin melpa-stable
-  :init
+  :config
   ;; 参考
   ;; http://blog.shibayu36.org/entry/2014/02/11/160945
   ;; https://gist.github.com/safx/3366866
@@ -431,7 +430,7 @@
 
   ;; 矢印の境界をきれいにする
   ;; 参考: http://ytsk.hatenablog.com/entry/2015/09/23/021856
-  ;;(setq ns-use-srgb-colorspace nil)
+  ;;(set-variable 'ns-use-srgb-colorspace nil)
   )
 
 ;;; linum mode
@@ -439,9 +438,9 @@
 ;; https://org-technology.com/posts/nlinum-mode.html
 ;; https://www.emacswiki.org/emacs/LineNumbers
 (use-package linum
-  :init
+  :config
   (global-linum-mode t)
-  (setq linum-format "%5d ")
+  (set-variable 'linum-format "%5d ")
   ;; faceの色を変更
   (custom-set-faces
    '(linum-highlight-face
@@ -453,7 +452,7 @@
   )
 (use-package hlinum
   :after linum
-  :init
+  :config
   (hlinum-activate)
   )
 
@@ -466,8 +465,8 @@
 	 )
   )
 (use-package visual-regexp-steroids
-  :init
-  (setq vr/engine 'python)
+  :config
+  (set-variable 'vr/engine 'python)
   )
 
 ;;; smooth-scroll
@@ -475,13 +474,13 @@
 ;; 参考 : http://qiita.com/ShingoFukuyama/items/429199542c38625c5554
 ;; 動作がだいぶ遅くなるのでボツ
 ;; (use-package smooth-scroll
-;;   :init
+;;   :config
 ;;   (smooth-scroll-mode t)
 ;;   )
 
 ;;; volatile-highlights
 (use-package volatile-highlights
-  :init
+  :config
   ;; 参考
   ;; https://github.com/k-talo/volatile-highlights.el/blob/master/README-ja.org
   (volatile-highlights-mode t)
@@ -496,15 +495,15 @@
 ;;; session
 ;; desktop.el でよくない?w
 ;; (use-package session
-;;   :init
+;;   :config
 ;;   ;; 参考
 ;;   ;; http://d.hatena.ne.jp/whitypig/20110331/1301521329
-;;   (setq session-save-file-coding-system 'utf-8-unix)
-;;   (setq session-save-file (expand-file-name "~/.emacs.d/.session/.session.ntemacs"))
-;;   (setq session-initialize '(session places))
-;;   (setq session-globals-max-size 1024)
-;;   (setq session-globals-max-string (* 1024 1024))
-;;   (setq session-globals-include '((kill-ring 512)
+;;   (set-variable 'session-save-file-coding-system 'utf-8-unix)
+;;   (set-variable 'session-save-file (expand-file-name "~/.emacs.d/.session/.session.ntemacs"))
+;;   (set-variable 'session-initialize '(session places))
+;;   (set-variable 'session-globals-max-size 1024)
+;;   (set-variable 'session-globals-max-string (* 1024 1024))
+;;   (set-variable 'session-globals-include '((kill-ring 512)
 ;; 				  (session-file-alist 512)
 ;; 				  (file-name-history 512)
 ;; 				  ;; TODO make it be able to use shell-command-history
@@ -513,7 +512,7 @@
 ;; 				  (tags-table-set-list 128)))
 ;;   (add-hook 'after-init-hook 'session-initialize)
 ;;   ;; Save session info every 15 minutes
-;;   (setq my-timer-for-session-save-session (run-at-time t (* 15 60) 'session-save-session))
+;;   (set-variable 'my-timer-for-session-save-session (run-at-time t (* 15 60) 'session-save-session))
 ;;   )
 
 ;;; desktop
@@ -522,13 +521,13 @@
 ;; http://lioon.net/emacs-desktop
 ;; https://github.com/emacs-mirror/emacs/blob/master/lisp/desktop.el
 (use-package desktop
-  :init
+  :config
   (desktop-save-mode 1)
   ;; 保存場所を指定
   (let ((desktop-directory (locate-user-emacs-file ".desktop/")))
     (unless (file-directory-p desktop-directory) (mkdir desktop-directory))
     (add-to-list 'desktop-path desktop-directory)
-    (setq desktop-dirname desktop-directory)
+    (set-variable 'desktop-dirname desktop-directory)
   )
   (custom-set-variables
    ;; save時にいちいちaskしない
@@ -555,14 +554,14 @@
 ;;; popwin
 (use-package popwin
   :config
-  (setq display-buffer-function 'popwin:display-buffer)
+  (set-variable 'display-buffer-function 'popwin:display-buffer)
   )
 
 ;;; emacsclient
 ;; 一度起動したらずっとemacsが残ってくれる
 ;; 参考: http://futurismo.biz/archives/1273
 ;; (use-package server
-;;   :init
+;;   :config
 ;;   (unless (server-running-p) (server-start))
 ;;   )
 
