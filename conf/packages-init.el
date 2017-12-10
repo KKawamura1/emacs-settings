@@ -220,6 +220,73 @@
   (bind-key "C-e" 'seq-end)
   )
 
+;;; ace-isearch
+;; かっこいいけどisearchはゆっくりやりたいのでボツ
+(use-package ace-isearch
+  :disabled t
+  :config
+  (global-ace-isearch-mode 1)
+  (set-variable 'ace-isearch-input-length 5)
+  (set-variable 'ace-isearch-jump-delay 0.5)
+  (set-variable 'ace-isearch-function 'avy-goto-char)
+  (set-variable 'ace-isearch-use-jump 'printing-char)
+  )
+
+;;; hideshow
+;; コード折りたたみ機能
+;; 参考 : http://ameblo.jp/the-7str-guitarist/entry-11315679803.html
+;;        http://yohshiy.blog.fc2.com/blog-entry-264.html
+(use-package hideshow
+  :diminish hs-minor-mode
+  :init
+  (loop for hook in programing-hooks do
+	(add-hook hook 'hs-minor-mode)
+	)
+  :bind (:map hs-minor-mode-map
+	      ("C-t" . hs-toggle-hiding)
+	      ("C-x ," . hs-hide-all)
+	      ("C-x ." . hs-show-all)
+	      ("C-x M-," . hs-hide-all-comments)
+	      )
+  :config
+  ;; goto-line時に行き先がたたまれていたら展開する
+  ;; 参考
+  ;; https://www.emacswiki.org/emacs/HideShow
+  (defadvice goto-line (after expand-after-goto-line
+			      activate compile)
+    "hideshow-expand affected block when using goto-line in a collapsed buffer"
+    (save-excursion
+      (hs-show-block)))
+  ;; コメントだけ折りたたむ
+  ;; 参考
+  ;; https://www.emacswiki.org/emacs/HideShow
+  (defun hs-hide-all-comments ()
+    "Hide all top level blocks, if they are comments, displaying only first line.
+Move point to the beginning of the line, and run the normal hook
+`hs-hide-hook'.  See documentation for `run-hooks'."
+    (interactive)
+    (hs-life-goes-on
+     (save-excursion
+       (unless hs-allow-nesting
+	 (hs-discard-overlays (point-min) (point-max)))
+       (goto-char (point-min))
+       (let ((spew (make-progress-reporter "Hiding all comment blocks..."
+					   (point-min) (point-max)))
+	     (re (concat "\\(" hs-c-start-regexp "\\)")))
+	 (while (re-search-forward re (point-max) t)
+	   (if (match-beginning 1)
+	       ;; found a comment, probably
+	       (let ((c-reg (hs-inside-comment-p)))
+		 (when (and c-reg (car c-reg))
+		   (if (> (count-lines (car c-reg) (nth 1 c-reg)) 1)
+		       (hs-hide-block-at-point t c-reg)
+		     (goto-char (nth 1 c-reg))))))
+	   (progress-reporter-update spew (point)))
+	 (progress-reporter-done spew)))
+     (beginning-of-line)
+     (run-hooks 'hs-hide-hook)))
+  )
+
 ;;; ====== 特定のモードで使用するもの ======
 ;;; magit
 (use-package magit

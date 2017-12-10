@@ -19,11 +19,6 @@
 (set-default-coding-systems 'utf-8)
 
 ;;; ウィンドウ設定
-;; adjust window size
-;; (setq default-frame-alist (append (list
-;; 	'(width . 80)
-;; 	'(height . 50))
-;; 	default-frame-alist))
 ;; hide toolbar
 (tool-bar-mode 0)
 ;; hide menubar
