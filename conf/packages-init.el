@@ -440,6 +440,15 @@ Move point to the beginning of the line, and run the normal hook
 	 )
   )
 
+;;; yasnippet
+;; 参考
+;; http://vdeep.net/emacs-yasnippet
+(use-package yasnippet
+  :config
+  (add-to-list 'yas-snippet-dirs (locate-user-emacs-file "conf/snippets/"))
+  (yas-global-mode 1)
+  )
+
 ;;; ====== 起動時のみ使うもの ======
 (use-package init-open-recentf
   :config
