@@ -165,11 +165,13 @@
   :init
   (require 'smartparens-config)
   ;; 余計な機能を削除
-  ;; 参考: https://qiita.com/ShingoFukuyama/items/ed1af137a98e0028e025
-  (ad-disable-advice 'delete-backward-char 'before 'sp-delete-pair-advice)
-  (ad-activate 'delete-backward-char)
-  (smartparens-global-mode)
-  )
+  ;; 参考
+  ;; https://qiita.com/ShingoFukuyama/items/ed1af137a98e0028e025
+  ;; http://kawamuray.hatenablog.com/entry/2013/11/03/180543
+  ;; (ad-disable-advice 'delete-backward-char 'before 'sp-delete-pair-advice)
+  ;; (ad-activate 'delete-backward-char)
+  (custom-set-variables '(sp-autoskip-closing-pair 'always))
+  (smartparens-global-mode))
 
 ;;; auto complete
 (use-package auto-complete
@@ -490,27 +492,51 @@
   )
 
 ;;; ====== 特に使用を意識しないもの ======
+
 ;;; session
-(use-package session
+;; desktop.el でよくない?w
+;; (use-package session
+;;   :init
+;;   ;; 参考
+;;   ;; http://d.hatena.ne.jp/whitypig/20110331/1301521329
+;;   (setq session-save-file-coding-system 'utf-8-unix)
+;;   (setq session-save-file (expand-file-name "~/.emacs.d/.session/.session.ntemacs"))
+;;   (setq session-initialize '(session places))
+;;   (setq session-globals-max-size 1024)
+;;   (setq session-globals-max-string (* 1024 1024))
+;;   (setq session-globals-include '((kill-ring 512)
+;; 				  (session-file-alist 512)
+;; 				  (file-name-history 512)
+;; 				  ;; TODO make it be able to use shell-command-history
+;; 				  ;; keyword: comint-input-ring
+;; 				  ;; (shell-command-history 512)
+;; 				  (tags-table-set-list 128)))
+;;   (add-hook 'after-init-hook 'session-initialize)
+;;   ;; Save session info every 15 minutes
+;;   (setq my-timer-for-session-save-session (run-at-time t (* 15 60) 'session-save-session))
+;;   )
+
+;;; desktop
+;; コピーした内容やカーソル位置などを自動保存してくれる
+;; 参考
+;; http://lioon.net/emacs-desktop
+;; https://github.com/emacs-mirror/emacs/blob/master/lisp/desktop.el
+(use-package desktop
   :init
-  ;; 参考
-  ;; http://d.hatena.ne.jp/whitypig/20110331/1301521329
-  (setq session-save-file-coding-system 'utf-8-unix)
-  (setq session-save-file (expand-file-name "~/.session/.session.ntemacs"))
-  (setq session-initialize '(session places))
-  (setq session-globals-max-size 1024)
-  (setq session-globals-max-string (* 1024 1024))
-  (setq session-globals-include '((kill-ring 512)
-				  (session-file-alist 512)
-				  (file-name-history 512)
-				  ;; TODO make it be able to use shell-command-history
-				  ;; keyword: comint-input-ring
-				  ;; (shell-command-history 512)
-				  (tags-table-set-list 128)))
-  (add-hook 'after-init-hook 'session-initialize)
-  ;; Save session info every 15 minutes
-  (setq my-timer-for-session-save-session (run-at-time t (* 15 60) 'session-save-session))
+  (desktop-save-mode 1)
+  ;; 保存場所を指定
+  (let ((desktop-directory (locate-user-emacs-file ".desktop/")))
+    (unless (file-directory-p desktop-directory) (mkdir desktop-directory))
+    (add-to-list 'desktop-path desktop-directory)
+    (setq desktop-dirname desktop-directory)
   )
+  (custom-set-variables
+   ;; save時にいちいちaskしない
+   '(desktop-save t)
+   ;; idleになってからsessionを保存するまでの時間を指定
+   '(desktop-auto-save-timeout 10)
+   )
+)
 
 ;;; smartrep
 (use-package smartrep
