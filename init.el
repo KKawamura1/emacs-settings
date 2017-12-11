@@ -32,3 +32,7 @@
 (load "operability-init")
 ;; 見た目設定
 (load "look-init")
+
+;; todo list
+;; https://qiita.com/yynozk/items/7dce94f770e6f3f0b26c
+;; http://www.shigemk2.com/entry/emacs_resudo
