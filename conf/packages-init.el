@@ -172,7 +172,6 @@
   ;; http://kawamuray.hatenablog.com/entry/2013/11/03/180543
   ;; (ad-disable-advice 'delete-backward-char 'before 'sp-delete-pair-advice)
   ;; (ad-activate 'delete-backward-char)
-  (custom-set-variables '(sp-autoskip-closing-pair 'always))
   (smartparens-global-mode))
 
 ;;; auto complete
