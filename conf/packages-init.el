@@ -374,6 +374,25 @@ Move point to the beginning of the line, and run the normal hook
   ;; (set-face-background 'highlight-indentation-current-column-face "#777777")
   ;; (add-hook 'elpy-mode-hook 'highlight-indentation-mode)
   ;; (add-hook 'elpy-mode-hook 'highlight-indentation-current-column-mode)
+
+  ;; ipythonでmoduleを自動的にリロードする
+  ;; これがないとeditしてC-cしても変更が適用されない
+  ;; 参考
+  ;; https://emacs.stackexchange.com/questions/29752/emacs-python-can-not-update-imported-files
+  ;; https://ipython.org/ipython-doc/3/config/intro.html
+  ;; http://ipython.readthedocs.io/en/stable/config/extensions/autoreload.html?highlight=autoreload
+  (let* (
+	 (profile-name "profile_for_emacs")
+	 (folder-name-getter `(substring (shell-command-to-string (concat "ipython locate profile " ,profile-name)) 0 -1))
+	 )
+    (unless (file-directory-p (eval folder-name-getter))
+      (shell-command (concat "ipython profile create " profile-name))
+      (let ((ipython-config-folder (eval folder-name-getter)))
+	(shell-command (concat "echo \"\n\nc.InteractiveShellApp.extensions.append(\\\"autoreload\\\")\nc.InteractiveShellApp.exec_lines.append(\\\"%autoreload 2\\\")\" >> " ipython-config-folder "/ipython_config.py"))
+	)
+      )
+    (set-variable 'python-shell-interpreter-args (concat "--profile=" profile-name " " python-shell-interpreter-args))
+    )
   )
 
 ;;; flycheck-pos-tip
@@ -613,13 +632,11 @@ Move point to the beginning of the line, and run the normal hook
     (unless (file-directory-p desktop-directory) (mkdir desktop-directory))
     (add-to-list 'desktop-path desktop-directory)
     (set-variable 'desktop-dirname desktop-directory)
-  )
-  (custom-set-variables
-   ;; save時にいちいちaskしない
-   '(desktop-save t)
-   ;; idleになってからsessionを保存するまでの時間を指定
-   '(desktop-auto-save-timeout 10)
-   )
+    )
+  ;; save時にいちいちaskしない
+  (set-variable 'desktop-save t)
+  ;; idleになってからsessionを保存するまでの時間を指定
+  (set-variable 'desktop-auto-save-timeout 10)
   )
 
 ;;; savehist
