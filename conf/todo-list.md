@@ -4,6 +4,13 @@
 
 * https://qiita.com/yynozk/items/7dce94f770e6f3f0b26c
 * http://www.shigemk2.com/entry/emacs_resudo
+* https://qiita.com/kawabata@github/items/ac503ea104eac3eea602
+
+## 改善したいもの
+
+* https://groups.google.com/forum/#!topic/gnu.emacs.help/4UWFG7NiplQ
+
+ここにあるとおり，変数は`customize-set-variable`で変更するのが良さげ．
 
 ## 実装したいもの
 
