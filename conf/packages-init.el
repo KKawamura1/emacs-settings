@@ -641,6 +641,9 @@ Move point to the beginning of the line, and run the normal hook
   (set-variable 'desktop-save t)
   ;; idleになってからsessionを保存するまでの時間を指定
   (set-variable 'desktop-auto-save-timeout 10)
+  ;; 復元するバッファ数の指定
+  ;; 参考: https://ayatakesi.github.io/emacs/24.5/Saving-Emacs-Sessions.html
+  (customize-set-variable 'desktop-restore-eager 3)
   )
 
 ;;; savehist
