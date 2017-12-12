@@ -20,7 +20,14 @@
 これをlispで自動化したい．
 
 実行しなければならないコード (気づいたらここに追記する)
+
 ```shell
 # pipとpythonのinstall
 pip install ...
 ```
+
+### numpy with openblas on MacOSX
+numpyはmacosではopenblasを付けてインストールしなければならない
+[参考](https://docs.chainer.org/en/stable/tips.html#mnist-example-does-not-converge-in-cpu-mode-on-mac-os-x "参考")
+[これ](https://www.fukudat.com/wiki/ja/Chainer/Mac "chainer on mac") に従って`site.cfg`を書き換え，`~/.numpy-site.cfg`に配置して`pip install --no-cache --no-binary :all: numpy`する
+動作確認は[ここ](https://qiita.com/unnonouno/items/8ab453a1868d77a93679 "動作確認") を参照
