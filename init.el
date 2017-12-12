@@ -32,3 +32,6 @@
 (load "operability-init")
 ;; 見た目設定
 (load "look-init")
+
+;; customizeの適用
+(load "custom-file")
