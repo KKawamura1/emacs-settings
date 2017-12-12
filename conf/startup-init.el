@@ -57,7 +57,7 @@
    'auto-save-list-file-prefix (concat auto-save-list-dir "saves-"))
   ;; custom-set-variables ファイル
   (set-variable
-   'custom-file (locate-user-emacs-file "custom-file.el"))
+   'custom-file (locate-user-emacs-file "conf/custom-file.el"))
   ;; recentf ファイル
   (set-variable
    'recentf-save-file (concat cache-dir "recentf"))

@@ -11,8 +11,5 @@
 # 外部elisp
 !site-lisp/
 
-# custom-file
-!custom-file.el
-
 # このファイル自身
 !.gitignore
