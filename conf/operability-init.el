@@ -38,4 +38,33 @@
 (bind-key "<return>" 'newline-and-indent)
 (bind-key "C-m" 'newline-and-indent)
 
-;;; operability-init.el ends here
+;;; python shellをreopenする
+;; 動作が重くなったときにひょいっと実行する
+(defun reopen-python-shell ()
+  "Kill and reopen existing inferior python shell."
+  (interactive)
+  (let (
+	(python-buffer-name "*Python*")
+	(python-old-buffer-name "*Python-old*")
+	)
+    (when (get-buffer-process python-buffer-name)
+      (let* (
+	     ;; (existing-python-buffer (get-buffer-process python-buffer-name))
+	     (target-python-window (get-buffer-window python-buffer-name))
+	     (python-old-process (get-buffer-process python-buffer-name))
+	     (python-actual-old-buffer-name
+	      (with-current-buffer python-buffer-name
+		(rename-buffer python-old-buffer-name t)))
+	     )
+	(set-process-query-on-exit-flag python-old-process nil)
+	(run-python (python-shell-parse-command) nil nil)
+	(with-selected-window target-python-window
+	  (switch-to-buffer python-buffer-name))
+	(kill-process python-old-process)
+	(kill-buffer python-actual-old-buffer-name)
+	(select-window target-python-window)
+	)
+      )
+    )
+  )
+(bind-key "C-c r" 'reopen-python-shell inferior-python-mode-map)
