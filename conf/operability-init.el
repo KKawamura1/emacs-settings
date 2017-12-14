@@ -68,3 +68,8 @@
     )
   )
 (bind-key "C-c r" 'reopen-python-shell inferior-python-mode-map)
+
+;;; pythonでインデント
+(bind-keys :map python-mode-map
+	   ("C-c <right>" . python-indent-shift-right)
+	   ("C-c <left>" . python-indent-shift-left))
