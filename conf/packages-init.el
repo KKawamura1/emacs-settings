@@ -453,6 +453,8 @@ Move point to the beginning of the line, and run the normal hook
 	       (set-variable 'tex-command "latexmk") ; typeset command
 	       (set-variable 'dvi2-command "open -a /Applications/Preview.app") ; preview command
 	       (set-variable 'tex-pdfview-command "open -a /Applications/Preview.app")))
+  ;; typeset
+  (bind-key "C-c C-c" 'YaTeX-typeset-menu YaTeX-mode-map)
   )
 
 ;;; markdown-mode
