@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: default-in-argparse
+# key: %def
+# --
+%(default)s
