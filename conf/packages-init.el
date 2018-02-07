@@ -478,6 +478,22 @@ Move point to the beginning of the line, and run the normal hook
   (yas-global-mode 1)
   )
 
+;;; gnuplot
+(use-package gnuplot
+  :mode (
+	 ("\\.gp\\'" . gnuplot-mode)
+	 ("\\.plt\\'" . gnuplot-mode)
+	 )
+  :config
+  (bind-key "C-c C-c" 'gnuplot-send-buffer-to-gnuplot gnuplot-mode-map)
+  )
+
+;;; yaml
+(use-package yaml-mode
+  :mode (
+	 ("\\.ya?ml$" . yaml-mode))
+  )
+
 ;;; ====== 起動時のみ使うもの ======
 (use-package init-open-recentf
   :config
