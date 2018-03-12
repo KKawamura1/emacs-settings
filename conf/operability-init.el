@@ -17,6 +17,7 @@
 ;;; 参考 : http://yusuke-ujitoko.hatenablog.com/entry/2016/05/29/174259
 ;;;        http://d.hatena.ne.jp/l1o0/20100429/1272557315
 ;;;        https://coderwall.com/p/posneq/cooperation-with-the-clipboard-and-emacs-window-no-window
+;;;        https://gist.github.com/dcalacci/34dee28d39130070ff67
 ;; for GUI
 (cond (window-system
        (custom-set-variables '(x-select-enable-clipboard t))
@@ -28,7 +29,13 @@
       (process-send-string proc text)
       (process-send-eof proc))))
 (defun my-paste-function ()
-  (shell-command-to-string "pbpaste"))
+  "Handle copy/paste intelligently on osx. https://gist.github.com/dcalacci/34dee28d39130070ff67"
+  (let ((pbpaste (purecopy "/usr/bin/pbpaste")))
+    (if (and (eq system-type 'darwin)
+             (file-exists-p pbpaste))
+        (let ((tramp-mode nil)
+              (default-directory "~"))
+          (shell-command-to-string pbpaste)))))
 (when (eq system-type 'darwin)
   (custom-set-variables
    '(interprogram-cut-function 'my-cut-function)
