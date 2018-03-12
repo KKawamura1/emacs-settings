@@ -391,7 +391,7 @@ Move point to the beginning of the line, and run the normal hook
   	(shell-command (concat "echo \"\n\nc.InteractiveShellApp.extensions.append(\\\"autoreload\\\")\nc.InteractiveShellApp.exec_lines.append(\\\"%autoreload 2\\\")\" >> " ipython-config-folder "/ipython_config.py"))
   	)
       )
-    (set-variable 'python-shell-interpreter-args (concat "--profile=" profile-name " " python-shell-interpreter-args))
+    (set-variable 'python-shell-interpreter-args (concat "--profile " profile-name " " python-shell-interpreter-args))
     )
   ;; args out of range を修正
   ;; 参考
