@@ -12,13 +12,14 @@
 ;; 参考
 ;; http://www.wagavulin.jp/entry/2016/07/04/211631
 (require 'package)
-(set-variable 'package-archives '(
+(custom-set-variables '(package-archives '(
 			 ("melpa" . "http://melpa.org/packages/")
 			 ("melpa-stable" . "http://stable.melpa.org/packages/")
 			 ;; ("melpa-milkbox" . "http://melpa.milkbox.net/packages/")
 			 ("marmalade" . "http://marmalade-repo.org/packages/")
 			 ("elpy" . "https://jorgenschaefer.github.io/packages/")
 			 ))
+		      )
 (package-initialize)
 (unless package-archive-contents (package-refresh-contents))
 (unless (package-installed-p 'use-package)
@@ -28,7 +29,7 @@
 ;;; use-packageを使う
 (eval-when-compile
   (require 'use-package)
-  (set-variable 'use-package-always-ensure t) ; 常に packageがなければinstall
+  (custom-set-variables '(use-package-always-ensure t)) ; 常に packageがなければinstall
   )
 
 ;;; ====== use-package に必要なもの ======
@@ -80,9 +81,9 @@
   ;; helmでググる
   ;; C-c h g でグーグル検索できる
   ;; そのときにできればcurlを使う
-  (set-variable 'browse-url-generic-program "google-chrome")
+  (custom-set-variables '(browse-url-generic-program "google-chrome"))
   (when (executable-find "curl")
-    (set-variable 'helm-google-suggest-use-curl-p t))
+    (custom-set-variables '(helm-google-suggest-use-curl-p t)))
   ;; helm bufferを現在のwindowで開き，minibufferも現在のウインドウのminibufferにする
   ;; windowが上の方にある場合でも，一番下を見る必要がなくなる
   ;; 参考: https://www.reddit.com/r/emacs/comments/3asbyn/new_and_very_useful_helm_feature_enter_search/
@@ -97,45 +98,45 @@
 	(setq-local cursor-type nil))))
   ;; と思ったけど別に隠さなくてもよくない?w
   ;; (add-hook 'helm-minibuffer-set-up-hook 'helm-hide-minibuffer-maybe)
-  ;; windowが複数あるときに，current window内にhelmを開く
-  (set-variable 'helm-split-window-in-side-p t)
-  ;; window内のminibufferに，一番下のminibufferの内容をコピー
-  (set-variable 'helm-echo-input-in-header-line t)
   ;; header-lineの色を他と合わせる
   ;; 参考
   ;; https://github.com/emacs-helm/helm/issues/1139
   ;; http://kei10in.hatenablog.jp/entry/20101101/1288617632
   ;; 本当はheader-lineではなくhelm-headerを変えたいが，
   ;; どうもhelm-headerは読んでいない模様
-  (set-face-attribute 'header-line nil
-		      :foreground "#e1e1e0"
-		      :background "#3a3a3a"
-		      :underline nil
-		      :box nil
-		      :inherit nil)
-
-  ;; 諸々設定
-  ;; 上下をつなげる
-  ;; helm-find-fileなどで次セクションに行けないのでやめる
-  ;; (set-variable 'helm-move-to-line-cycle-in-source t)
-  ;; M-<next>で何行動くかを指定する
-  (set-variable 'helm-scroll-amount 8)
-  ;; よくわからんものたち
-  (set-variable 'helm-ff-search-library-in-sexp t)
-  (set-variable 'helm-ff-file-name-history-use-recentf t)
-
+  (custom-set-faces '(header-line nil
+				  :foreground "#e1e1e0"
+				  :background "#3a3a3a"
+				  :underline nil
+				  :box nil
+				  :inherit nil))
+  (custom-set-variables
+   ;; windowが複数あるときに，current window内にhelmを開く
+   '(helm-split-window-in-side-p t)
+   ;; window内のminibufferに，一番下のminibufferの内容をコピー
+   '(helm-echo-input-in-header-line t)
+   ;; 諸々設定
+   ;; 上下をつなげる
+   ;; helm-find-fileなどで次セクションに行けないのでやめる
+   ;; '(helm-move-to-line-cycle-in-source t)
+   ;; M-<next>で何行動くかを指定する
+   '(helm-scroll-amount 8)
+   ;; よくわからんものたち
+   '(helm-ff-search-library-in-sexp t)
+   '(helm-ff-file-name-history-use-recentf t)
+   '(helm-M-x-fuzzy-match t)
+   '(helm-buffers-fuzzy-matching t)
+   '(helm-recentf-fuzzy-match t)
+   '(helm-semantic-fuzzy-match t)
+   '(helm-imenu-fuzzy-match t)
+   )
   ;; Autoresize
   ;; Helmバッファのサイズを候補の数に応じて自動的に変更する
   ;; 動的に変更されるわけじゃないので要らない
-  ;; (set-variable 'helm-autoresize-max-height 0)
-  ;; (set-variable 'helm-autoresize-min-height 20)
+  ;; (custom-set-variables
+  ;;  '(helm-autoresize-max-height 0)
+  ;;  '(helm-autoresize-min-height 20))
   ;; (helm-autoresize-mode 1)
-
-  (set-variable 'helm-M-x-fuzzy-match t)
-  (set-variable 'helm-buffers-fuzzy-matching t)
-  (set-variable 'helm-recentf-fuzzy-match t)
-  (set-variable 'helm-semantic-fuzzy-match t)
-  (set-variable 'helm-imenu-fuzzy-match t)
   (add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
   (helm-mode 1)
   )
@@ -188,10 +189,12 @@
   (add-to-list 'ac-modes 'org-mode)
   (add-to-list 'ac-modes 'yatex-mode)
   (ac-set-trigger-key "TAB")
-  (set-variable 'ac-use-menu-map t)       ;; 補完メニュー表示時にC-n/C-pで補完候補選択
-  (set-variable 'ac-use-fuzzy t)          ;; 曖昧マッチ
-  (set-variable 'ac-ignore-case nil)
-  (set-variable 'ac-comphist-file (locate-user-emacs-file ".cache/ac-comphist.dat"))
+  (custom-set-variables
+   '(ac-use-menu-map t)       ;; 補完メニュー表示時にC-n/C-pで補完候補選択
+   '(ac-use-fuzzy t)          ;; 曖昧マッチ
+   '(ac-ignore-case nil)
+   '(ac-comphist-file (locate-user-emacs-file ".cache/ac-comphist.dat"))
+   )
   )
 
 ;;; smart-newline
@@ -227,10 +230,12 @@
   :disabled t
   :config
   (global-ace-isearch-mode 1)
-  (set-variable 'ace-isearch-input-length 5)
-  (set-variable 'ace-isearch-jump-delay 0.5)
-  (set-variable 'ace-isearch-function 'avy-goto-char)
-  (set-variable 'ace-isearch-use-jump 'printing-char)
+  (custom-set-variables
+   '(ace-isearch-input-length 5)
+   '(ace-isearch-jump-delay 0.5)
+   '(ace-isearch-function 'avy-goto-char)
+   '(ace-isearch-use-jump 'printing-char)
+   )
   )
 
 ;;; hideshow
@@ -298,14 +303,14 @@ Move point to the beginning of the line, and run the normal hook
 	 )
   :init
   ;; vc-modeとオサラバ
-  (set-variable 'vc-handled-backends '())
+  (custom-set-variables '(vc-handled-backends '()))
   (eval-after-load "vc" '(remove-hook 'find-file-hooks 'vc-find-file-hook))
   :config
   ;;; auto-revert-mode
   ;; git checkoutとかした時にemacsのbufferの内容を強制的に変更するかどうか
   ;; 参考: https://github.com/magit/magit/issues/1783
   ;;       https://github.com/magit/magit/issues/1809
-  (set-variable 'magit-auto-revert-mode t)
+  (custom-set-variables '(magit-auto-revert-mode t))
   )
 
 ;;; pyenv-mode
@@ -323,7 +328,7 @@ Move point to the beginning of the line, and run the normal hook
 ;;; flycheck
 (use-package flycheck
   :config
-  (set-variable 'flycheck-flake8-maximum-line-length 100)
+  (custom-set-variables '(flycheck-flake8-maximum-line-length 100))
   )
 
 ;;; elpy
@@ -353,7 +358,7 @@ Move point to the beginning of the line, and run the normal hook
   ;; https://org-technology.com/posts/emacs-elpy.html
   (elpy-enable)
   (elpy-use-ipython)
-  (set-variable 'elpy-rpc-backend "jedi")
+  (custom-set-variables '(elpy-rpc-backend "jedi"))
   (remove-hook 'elpy-modules 'elpy-module-flymake)
   (add-hook 'elpy-mode-hook 'flycheck-mode)
   (smartrep-define-key elpy-mode-map "C-c"
@@ -362,11 +367,11 @@ Move point to the beginning of the line, and run the normal hook
   ;; python で auto-complete が起動しないようにする
   ;; 参考
   ;; https://github.com/jorgenschaefer/elpy/issues/813
-  (set-variable 'ac-modes (delq 'python-mode ac-modes))
+  (custom-set-variables '(ac-modes (delq 'python-mode ac-modes)))
   ;; python-highlight-indentationをdisableする
   ;; 参考
   ;; https://github.com/jorgenschaefer/elpy/issues/66#event-48574382
-  (set-variable 'elpy-modules (delq 'elpy-module-highlight-indentation elpy-modules))
+  (custom-set-variables '(elpy-modules (delq 'elpy-module-highlight-indentation elpy-modules)))
   ;; enableしたいときはこっち
   ;; 参考
   ;; https://org-technology.com/posts/emacs-elpy.html
@@ -391,7 +396,8 @@ Move point to the beginning of the line, and run the normal hook
   	(shell-command (concat "echo \"\n\nc.InteractiveShellApp.extensions.append(\\\"autoreload\\\")\nc.InteractiveShellApp.exec_lines.append(\\\"%autoreload 2\\\")\" >> " ipython-config-folder "/ipython_config.py"))
   	)
       )
-    (set-variable 'python-shell-interpreter-args (concat "--profile " profile-name " " python-shell-interpreter-args))
+    (custom-set-variables
+     `(python-shell-interpreter-args (concat "--profile " ,profile-name " " python-shell-interpreter-args)))
     )
   ;; args out of range を修正
   ;; 参考
@@ -418,7 +424,7 @@ Move point to the beginning of the line, and run the normal hook
   ;; https://github.com/paetzke/py-autopep8.el
   :config
   (add-hook 'python-mode-hook 'py-autopep8-enable-on-save)
-  (set-variable 'py-autopep8-options '("--max-line-length=100"))
+  (custom-set-variables '(py-autopep8-options '("--max-line-length=100")))
   )
 
 ;;; cc-mode
@@ -444,15 +450,15 @@ Move point to the beginning of the line, and run the normal hook
 	 )
   :config
   ;; set YaTeX coding system
-  (set-variable 'YaTeX-kanji-code 4) ; UTF-8 の設定
-  (add-hook 'yatex-mode-hook
-	    '(lambda ()
-	       (set-variable 'YaTeX-use-AMS-LaTeX t) ; align で数式モードになる
-	       (set-variable 'YaTeX-use-hilit19 nil)
-	       (set-variable 'YateX-use-font-lock t)
-	       (set-variable 'tex-command "latexmk") ; typeset command
-	       (set-variable 'dvi2-command "open -a /Applications/Preview.app") ; preview command
-	       (set-variable 'tex-pdfview-command "open -a /Applications/Preview.app")))
+  (custom-set-variables
+   '(YaTeX-kanji-code 4) ; UTF-8 の設定
+   '(YaTeX-use-AMS-LaTeX t) ; align で数式モードになる
+   '(YaTeX-use-hilit19 nil)
+   '(YateX-use-font-lock t)
+   '(tex-command "latexmk") ; typeset command
+   '(dvi2-command "open -a /Applications/Preview.app") ; preview command
+   '(tex-pdfview-command "open -a /Applications/Preview.app")
+  )
   ;; typeset
   (bind-key "C-c C-c" 'YaTeX-typeset-menu YaTeX-mode-map)
   )
@@ -557,7 +563,7 @@ Move point to the beginning of the line, and run the normal hook
 
   ;; 矢印の境界をきれいにする
   ;; 参考: http://ytsk.hatenablog.com/entry/2015/09/23/021856
-  ;;(set-variable 'ns-use-srgb-colorspace nil)
+  ;; (custom-set-variables '(ns-use-srgb-colorspace nil))
   )
 
 ;;; linum mode
@@ -567,7 +573,7 @@ Move point to the beginning of the line, and run the normal hook
 (use-package linum
   :config
   (global-linum-mode t)
-  (set-variable 'linum-format "%5d ")
+  (custom-set-variables '(linum-format "%5d "))
   )
 (use-package hlinum
   :after linum
@@ -590,7 +596,7 @@ Move point to the beginning of the line, and run the normal hook
 (use-package visual-regexp-steroids
   :after visual-regexp
   :config
-  (set-variable 'vr/engine 'python)
+  (custom-set-variables '(vr/engine 'python))
   )
 
 ;;; smooth-scroll
@@ -624,21 +630,23 @@ Move point to the beginning of the line, and run the normal hook
   :config
   ;; 参考
   ;; http://d.hatena.ne.jp/whitypig/20110331/1301521329
-  (set-variable 'session-save-file-coding-system 'utf-8-unix)
-  (set-variable 'session-save-file (expand-file-name "~/.emacs.d/.session/.session.ntemacs"))
-  (set-variable 'session-initialize '(session places))
-  (set-variable 'session-globals-max-size 1024)
-  (set-variable 'session-globals-max-string (* 1024 1024))
-  (set-variable 'session-globals-include '((kill-ring 512)
-				  (session-file-alist 512)
-				  (file-name-history 512)
-				  ;; TODO make it be able to use shell-command-history
-				  ;; keyword: comint-input-ring
-				  ;; (shell-command-history 512)
-				  (tags-table-set-list 128)))
+  (custom-set-variables
+   '(session-save-file-coding-system 'utf-8-unix)
+   '(session-save-file (expand-file-name "~/.emacs.d/.session/.session.ntemacs"))
+   '(session-initialize '(session places))
+   '(session-globals-max-size 1024)
+   '(session-globals-max-string (* 1024 1024))
+   '(session-globals-include '((kill-ring 512)
+			       (session-file-alist 512)
+			       (file-name-history 512)
+			       ;; TODO make it be (and )ble to use shell-command-history
+			       ;; keyword: comint-input-ring
+			       ;; (shell-command-history 512)
+			       (tags-table-set-list 128)))
+   ;; Save session info every 15 minutes
+   '(my-timer-for-session-save-session (run-at-time t (* 15 60) 'session-save-session))
+   )
   (add-hook 'after-init-hook 'session-initialize)
-  ;; Save session info every 15 minutes
-  (set-variable 'my-timer-for-session-save-session (run-at-time t (* 15 60) 'session-save-session))
   )
 
 ;;; desktop
@@ -653,15 +661,17 @@ Move point to the beginning of the line, and run the normal hook
   (let ((desktop-directory (locate-user-emacs-file ".cache/desktop/")))
     (unless (file-directory-p desktop-directory) (mkdir desktop-directory))
     (add-to-list 'desktop-path desktop-directory)
-    (set-variable 'desktop-dirname desktop-directory)
+    (custom-set-variables `(desktop-dirname ,desktop-directory))
     )
-  ;; save時にいちいちaskしない
-  (set-variable 'desktop-save t)
-  ;; idleになってからsessionを保存するまでの時間を指定
-  (set-variable 'desktop-auto-save-timeout 10)
-  ;; 復元するバッファ数の指定
-  ;; 参考: https://ayatakesi.github.io/emacs/24.5/Saving-Emacs-Sessions.html
-  (customize-set-variable 'desktop-restore-eager 3)
+  (custom-set-variables
+   ;; save時にいちいちaskしない
+   '(desktop-save t)
+   ;; idleになってからsessionを保存するまでの時間を指定
+   '(desktop-auto-save-timeout 10)
+   ;; 復元するバッファ数の指定
+   ;; 参考: https://ayatakesi.github.io/emacs/24.5/Saving-Emacs-Sessions.html
+   '(desktop-restore-eager 3)
+   )
   )
 
 ;;; savehist
@@ -670,7 +680,7 @@ Move point to the beginning of the line, and run the normal hook
   :config
   (savehist-mode 1)
   (add-to-list 'savehist-additional-variables 'foo)
-  (set-variable 'savehist-file (locate-user-emacs-file ".cache/savehist"))
+  (custom-set-variables '(savehist-file (locate-user-emacs-file ".cache/savehist")))
   )
 
 
@@ -691,7 +701,7 @@ Move point to the beginning of the line, and run the normal hook
 ;;; popwin
 (use-package popwin
   :config
-  (set-variable 'display-buffer-function 'popwin:display-buffer)
+  (custom-set-variables '(display-buffer-function 'popwin:display-buffer))
   )
 
 ;;; emacsclient

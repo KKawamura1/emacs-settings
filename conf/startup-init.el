@@ -5,7 +5,7 @@
 ;;; garbage collection settings
 ;; ガベージコレクタの発動条件のメモリ上限を引き上げて快適にする
 ;; 参考: http://nagayasu-shinya.com/emacs-bc-cons-threshold/
-(set-variable 'gc-cons-threshold (* 128 1024 1024)) ;; かなりデカい値
+(custom-set-variables '(gc-cons-threshold (* 128 1024 1024))) ;; かなりデカい値
 
 ;;; フォント設定
 ;; use UTF-8
@@ -46,21 +46,18 @@
   (unless (file-directory-p backup-dir) (mkdir backup-dir))
   (unless (file-directory-p auto-save-dir) (mkdir auto-save-dir))
   (unless (file-directory-p auto-save-list-dir) (mkdir auto-save-list-dir))
-  ;; バックアップファイル
-  (set-variable
-   'backup-directory-alist `(("." . ,backup-dir)))
-  ;; オートセーブファイル
-  (set-variable
-   'auto-save-file-name-transforms `(("\\([^/]*/\\)*\\([^/]*\\)$" ,auto-save-dir t)))
-  ;; セッションファイル
-  (set-variable
-   'auto-save-list-file-prefix (concat auto-save-list-dir "saves-"))
-  ;; custom-set-variables ファイル
-  (set-variable
-   'custom-file (locate-user-emacs-file "conf/custom-file.el"))
-  ;; recentf ファイル
-  (set-variable
-   'recentf-save-file (concat cache-dir "recentf"))
+  (custom-set-variables
+   ;; バックアップファイル
+   `(backup-directory-alist '(("." . ,backup-dir)))
+   ;; オートセーブファイル
+   `(auto-save-file-name-transforms '(("\\([^/]*/\\)*\\([^/]*\\)$" ,auto-save-dir t)))
+   ;; セッションファイル
+   `(auto-save-list-file-prefix (concat ,auto-save-list-dir "saves-"))
+   ;; custom-set-variables ファイル
+   '(custom-file (locate-user-emacs-file "conf/custom-file.el"))
+   ;; recentf ファイル
+   `(recentf-save-file (concat ,cache-dir "recentf"))
+   )
   )
 
 ;;; コードスタイル
@@ -69,7 +66,8 @@
 
 ;;; Warning: 'mapcar' called for effect; を防ぐ
 ;; 参考: http://d.hatena.ne.jp/kitokitoki/20100425/p1
-(set-variable 'byte-compile-warnings '(free-vars unresolved callargs redefine obsolete noruntime cl-functions interactive-only make-local))
+(custom-set-variables
+ '(byte-compile-warnings '(free-vars unresolved callargs redefine obsolete noruntime cl-functions interactive-only make-local)))
 
 ;;; 拡張子設定
 ;; 参考: http://qiita.com/tadsan/items/a21c268021b46b8a6b33

@@ -19,7 +19,7 @@
 ;;;        https://coderwall.com/p/posneq/cooperation-with-the-clipboard-and-emacs-window-no-window
 ;; for GUI
 (cond (window-system
-       (set-variable 'x-select-enable-clipboard t)
+       (custom-set-variables '(x-select-enable-clipboard t))
        ))
 ;; for CUI
 (defun my-cut-function (text &optional rest)
@@ -30,8 +30,11 @@
 (defun my-paste-function ()
   (shell-command-to-string "pbpaste"))
 (when (eq system-type 'darwin)
-  (set-variable 'interprogram-cut-function 'my-cut-function)
-  (set-variable 'interprogram-paste-function 'my-paste-function))
+  (custom-set-variables
+   '(interprogram-cut-function 'my-cut-function)
+   '(interprogram-paste-function 'my-paste-function)
+   )
+  )
 
 ;; 改行をnewline-and-indentにする
 ;; python以外ではsmart-newlineに上書きしてもらう
