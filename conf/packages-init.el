@@ -383,8 +383,8 @@ Move point to the beginning of the line, and run the normal hook
        (let ((pyenv-version-path (f-expand ".python-version" path)))
 	 (if (f-exists? pyenv-version-path)
 	     (pyenv-mode-set (s-trim (f-read-text pyenv-version-path 'utf-8))))))))
-  ;; tramp時に悪さをするのでやめた
-  ;; (add-hook 'find-file-hook 'ssbb-pyenv-hook)
+  ;; tramp時に悪さをするがないよりはあったほうがよい
+  (add-hook 'find-file-hook 'ssbb-pyenv-hook)
   :config
   ;; 参考
   ;; https://org-technology.com/posts/emacs-elpy.html
