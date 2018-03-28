@@ -21,6 +21,7 @@
 			 ))
 		      )
 (package-initialize)
+;; 初回起動時に情報を更新
 (unless package-archive-contents (package-refresh-contents))
 (unless (package-installed-p 'use-package)
   (package-install 'use-package))
@@ -184,7 +185,6 @@
   ;; http://keisanbutsuriya.hateblo.jp/entry/2015/02/08/175005
   (require 'auto-complete-config)
   (ac-config-default)
-  (global-auto-complete-mode t)
   (add-to-list 'ac-modes 'text-mode)         ;; text-modeでも自動的に有効にする
   (add-to-list 'ac-modes 'fundamental-mode)  ;; fundamental-mode
   (add-to-list 'ac-modes 'org-mode)
@@ -490,6 +490,7 @@ Move point to the beginning of the line, and run the normal hook
 		       )))
   (loop for hook in c-like-hooks
 	do (add-hook hook 'ac-clang-async-setting))
+  (add-hook 'auto-complete-mode-hook 'ac-common-setup)
   )
 
 ;;; yatex
