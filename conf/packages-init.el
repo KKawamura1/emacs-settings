@@ -475,7 +475,8 @@ Move point to the beginning of the line, and run the normal hook
   :config
   (defun ac-clang-async-setting ()
     "Set auto-complete-clang-async."
-    (custom-set-variables '(ac-clang-complete-executable "clang-complete"))
+    (custom-set-variables '(ac-clang-complete-executable
+			    (locate-user-emacs-file "bin/clang-complete")))
     (if (executable-find ac-clang-complete-executable)
 	(progn
 	  (add-to-list 'ac-sources 'ac-source-clang-async)
