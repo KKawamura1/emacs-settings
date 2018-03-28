@@ -75,3 +75,12 @@
 
 ;;; recentf起動
 (recentf-mode 1)
+
+;;; CPPFLAGSからinclude pathを(文字列処理で無理やり)取得する
+(defvar c-include-paths (list))
+(let ((CPPFLAGS (split-string (getenv "CPPFLAGS"))))
+    (dolist (cpp-flag CPPFLAGS)
+      (when (eq 0 (string-match "^-I" cpp-flag))
+	(let ((include-path (substring cpp-flag (match-end 0))))
+	  (when (file-directory-p include-path)
+	    (add-to-list 'c-include-paths include-path))))))

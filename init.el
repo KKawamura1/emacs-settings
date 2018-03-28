@@ -20,12 +20,20 @@
 (add-to-list 'load-path (locate-user-emacs-file "conf/"))
 (add-to-list 'load-path (locate-user-emacs-file "site-lisp/"))
 
+;; 初回設定
+(load "first-setup")
+
+;; ローカル設定変数
+(let ((local-conf (locate-user-emacs-file "local-conf.el")))
+  (if (file-exists-p local-conf)
+      (load local-conf)
+    (display-warning "Userwarning" "Please make your local-conf file.")))
 ;; フック作成
 (load "add-hook-init")
-;; 各パッケージのメイン設定
-(load "packages-init")
 ;; 起動時設定
 (load "startup-init")
+;; 各パッケージのメイン設定
+(load "packages-init")
 ;; 画面分割
 (load "split-window-init")
 ;; 操作性改善

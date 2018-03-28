@@ -71,11 +71,6 @@
 	 ;; C-c h g でグーグル検索
 	 ("g" . helm-google-suggest)
 	 )
-  :commands helm-flycheck
-  :init
-  ;; flycheck
-  (with-eval-after-load 'flycheck
-    (bind-key "C-c C-v" 'helm-flycheck))
   :config
   (require 'helm-config)
   (require 'helm-grep)
@@ -142,6 +137,14 @@
   (helm-mode 1)
   )
 
+;;; helm-flycheck
+(use-package helm-flycheck
+  :after (helm flycheck)
+  :bind (
+	 ("C-c C-v" . helm-flycheck)
+	 )
+  )
+
 ;;; undo-tree
 (use-package undo-tree
   :diminish undo-tree-mode
@@ -177,7 +180,9 @@
   (smartparens-global-mode))
 
 ;;; auto complete
+;; company-mode に乗り換えたのでボツ
 (use-package auto-complete
+  :disabled t
   :pin melpa
   :diminish auto-complete-mode
   :config
@@ -196,6 +201,23 @@
    '(ac-ignore-case nil)
    '(ac-comphist-file (locate-user-emacs-file ".cache/ac-comphist.dat"))
    )
+  )
+
+;;; company-mode
+;; auto-complete から乗り換えた
+(use-package company
+  :diminish company-mode
+  :init
+  (global-company-mode)
+  :config
+  (custom-set-variables '(company-show-numbers t)
+			'(company-auto-complete t))
+  )
+
+;;; help for company
+(use-package company-quickhelp
+  :init
+  (add-hook 'global-company-mode-hook #'company-quickhelp-mode)
   )
 
 ;;; smart-newline
@@ -329,11 +351,16 @@ Move point to the beginning of the line, and run the normal hook
 ;;; flycheck
 (use-package flycheck
   :config
-  (custom-set-variables '(flycheck-clang-language-standard "c++14")
-			'(flycheck-flake8-maximum-line-length 100)
-			)
-  (loop for hook in c-like-hooks
-	do (add-hook hook 'flycheck-mode))
+  (global-flycheck-mode)
+  (custom-set-variables '(flycheck-flake8-maximum-line-length 100)
+			'(flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
+  (when (boundp 'c-include-paths)
+    (custom-set-variables '(flycheck-clang-include-path c-include-paths)))
+  (add-hook 'c++-mode-hook
+	    '(lambda ()
+	       (custom-set-variables
+		'(flycheck-clang-language-standard
+		  (if (boundp 'std-c++-version) std-c++-version "c++14")))))
   )
 
 ;;; elpy
@@ -344,7 +371,7 @@ Move point to the beginning of the line, and run the normal hook
 (use-package f)
 (use-package elpy
   :pin elpy
-  :after (jedi flycheck smartrep auto-complete pyenv-mode f)
+  :after (jedi flycheck smartrep pyenv-mode f)
   :init
   ;; 参考
   ;; https://org-technology.com/posts/emacs-elpy.html
@@ -374,7 +401,10 @@ Move point to the beginning of the line, and run the normal hook
   ;; python で auto-complete が起動しないようにする
   ;; 参考
   ;; https://github.com/jorgenschaefer/elpy/issues/813
-  (custom-set-variables '(ac-modes (delq 'python-mode ac-modes)))
+  ;; (custom-set-variables '(ac-modes (delq 'python-mode ac-modes)))
+  ;; 逆にelpyの補完を消す
+  ;; 参考: http://d.hatena.ne.jp/keita44_f4/20160504
+  (auto-complete-mode -1)
   ;; python-highlight-indentationをdisableする
   ;; 参考
   ;; https://github.com/jorgenschaefer/elpy/issues/66#event-48574382
@@ -458,40 +488,40 @@ Move point to the beginning of the line, and run the normal hook
   (add-hook 'before-save-hook 'clang-format-before-save)
   )
 
-;;; ac-headers
-(use-package auto-complete-c-headers
-  :after auto-complete
-  :config
-  (loop for hook in c-like-hooks
-	do (add-hook hook
-		     '(lambda ()
-			(add-to-list 'ac-sources 'ac-source-c-headers)))
-	)
-  )
+;; ;;; ac-headers
+;; (use-package auto-complete-c-headers
+;;   :after auto-complete
+;;   :config
+;;   (loop for hook in c-like-hooks
+;; 	do (add-hook hook
+;; 		     '(lambda ()
+;; 			(add-to-list 'ac-sources 'ac-source-c-headers)))
+;; 	)
+;;   )
 
-;;; ac-clang-async
-(use-package auto-complete-clang-async
-  :after (auto-complete auto-complete-c-headers)
-  :config
-  (defun ac-clang-async-setting ()
-    "Set auto-complete-clang-async."
-    (custom-set-variables '(ac-clang-complete-executable
-			    (locate-user-emacs-file "bin/clang-complete")))
-    (if (executable-find ac-clang-complete-executable)
-	(progn
-	  (add-to-list 'ac-sources 'ac-source-clang-async)
-	  (ac-clang-launch-completion-process)
-	  (custom-set-variables '(ac-clang-cflags '("-std=c++17"))))
-      (display-warning "UserWarning FileNotFound"
-		       (concat "ac-clang-complete-executable was not found!\n"
-			       "Please setup your emacs-clang-complete-async.\n"
-			       "See: https://github.com/Golevka/emacs-clang-complete-async\n")
-		       :warning
-		       )))
-  (loop for hook in c-like-hooks
-	do (add-hook hook 'ac-clang-async-setting))
-  (add-hook 'auto-complete-mode-hook 'ac-common-setup)
-  )
+;; ;;; ac-clang-async
+;; (use-package auto-complete-clang-async
+;;   :after (auto-complete auto-complete-c-headers)
+;;   :config
+;;   (defun ac-clang-async-setting ()
+;;     "Set auto-complete-clang-async."
+;;     (custom-set-variables '(ac-clang-complete-executable
+;; 			    (locate-user-emacs-file "bin/clang-complete")))
+;;     (if (executable-find ac-clang-complete-executable)
+;; 	(progn
+;; 	  (add-to-list 'ac-sources 'ac-source-clang-async)
+;; 	  (ac-clang-launch-completion-process)
+;; 	  (custom-set-variables '(ac-clang-cflags '("-std=c++17"))))
+;;       (display-warning "UserWarning FileNotFound"
+;; 		       (concat "ac-clang-complete-executable was not found!\n"
+;; 			       "Please setup your emacs-clang-complete-async.\n"
+;; 			       "See: https://github.com/Golevka/emacs-clang-complete-async\n")
+;; 		       :warning
+;; 		       )))
+;;   (loop for hook in c-like-hooks
+;; 	do (add-hook hook 'ac-clang-async-setting))
+;;   (add-hook 'auto-complete-mode-hook 'ac-common-setup)
+;;   )
 
 ;;; yatex
 (use-package yatex
@@ -768,6 +798,14 @@ Move point to the beginning of the line, and run the normal hook
   :disabled t
   :config
   (unless (server-running-p) (server-start))
+  )
+
+;;; exec-path-from-shell
+;; mac でemacsを使うときのバグを減らす
+(use-package exec-path-from-shell
+  :config
+  (when (memq window-system '(mac ns x))
+    (exec-path-from-shell-initialize))
   )
 
 ;;; libressl

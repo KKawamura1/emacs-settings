@@ -8,6 +8,9 @@
 # 設定ファイル
 !conf/
 
+# ローカル設定ファイル(のサンプル)
+!local-conf-example.el
+
 # 外部elisp
 !site-lisp/
 
