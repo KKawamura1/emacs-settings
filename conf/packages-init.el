@@ -184,6 +184,7 @@
   ;; http://keisanbutsuriya.hateblo.jp/entry/2015/02/08/175005
   (require 'auto-complete-config)
   (ac-config-default)
+  (global-auto-complete-mode t)
   (add-to-list 'ac-modes 'text-mode)         ;; text-modeでも自動的に有効にする
   (add-to-list 'ac-modes 'fundamental-mode)  ;; fundamental-mode
   (add-to-list 'ac-modes 'org-mode)
@@ -328,7 +329,11 @@ Move point to the beginning of the line, and run the normal hook
 ;;; flycheck
 (use-package flycheck
   :config
-  (custom-set-variables '(flycheck-flake8-maximum-line-length 100))
+  (custom-set-variables '(flycheck-clang-language-standard "c++14")
+			'(flycheck-flake8-maximum-line-length 100)
+			)
+  (loop for hook in c-like-hooks
+	do (add-hook hook 'flycheck-mode))
   )
 
 ;;; elpy
@@ -437,6 +442,52 @@ Move point to the beginning of the line, and run the normal hook
 	 ("\\.c\\'" . c-mode)
 	 ("\\.h\\'" . c-mode)
 	 )
+  )
+
+;;; clang-format
+(use-package clang-format
+  :config
+  ;; Hook function
+  ;; 参考: http://www.josephlisee.com/2015/02/21/exploring-clang-format/
+  (defun clang-format-before-save ()
+    "Add this to .emacs to clang-format on save
+ (add-hook 'before-save-hook 'clang-format-before-save)."
+  (interactive)
+  (when (eq major-mode 'c++-mode) (clang-format-buffer)))
+  (add-hook 'before-save-hook 'clang-format-before-save)
+  )
+
+;;; ac-headers
+(use-package auto-complete-c-headers
+  :after auto-complete
+  :config
+  (loop for hook in c-like-hooks
+	do (add-hook hook
+		     '(lambda ()
+			(add-to-list 'ac-sources 'ac-source-c-headers)))
+	)
+  )
+
+;;; ac-clang-async
+(use-package auto-complete-clang-async
+  :after (auto-complete auto-complete-c-headers)
+  :config
+  (defun ac-clang-async-setting ()
+    "Set auto-complete-clang-async."
+    (custom-set-variables '(ac-clang-complete-executable "clang-complete"))
+    (if (executable-find ac-clang-complete-executable)
+	(progn
+	  (add-to-list 'ac-sources 'ac-source-clang-async)
+	  (ac-clang-launch-completion-process)
+	  (custom-set-variables '(ac-clang-cflags '("-std=c++17"))))
+      (display-warning "UserWarning FileNotFound"
+		       (concat "ac-clang-complete-executable was not found!\n"
+			       "Please setup your emacs-clang-complete-async.\n"
+			       "See: https://github.com/Golevka/emacs-clang-complete-async\n")
+		       :warning
+		       )))
+  (loop for hook in c-like-hooks
+	do (add-hook hook 'ac-clang-async-setting))
   )
 
 ;;; yatex
