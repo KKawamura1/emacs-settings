@@ -362,8 +362,10 @@ Move point to the beginning of the line, and run the normal hook
   ;; 参考
   ;; https://org-technology.com/posts/emacs-elpy.html
   (elpy-enable)
-  (elpy-use-ipython)
-  (custom-set-variables '(elpy-rpc-backend "jedi"))
+  ;; (elpy-use-ipython)
+  (custom-set-variables '(elpy-rpc-backend "jedi")
+			'(python-shell-interpreter "ipython")
+			'(python-shell-interpreter-args "-i --simple-prompt"))
   (remove-hook 'elpy-modules 'elpy-module-flymake)
   (add-hook 'elpy-mode-hook 'flycheck-mode)
   (smartrep-define-key elpy-mode-map "C-c"
@@ -424,7 +426,6 @@ Move point to the beginning of the line, and run the normal hook
 
 ;;; py-autopep8
 (use-package py-autopep8
-  :hook python-mode
   ;; 参考
   ;; https://github.com/paetzke/py-autopep8.el
   :config
@@ -524,6 +525,8 @@ Move point to the beginning of the line, and run the normal hook
 	 "\\.md\\'"
 	 "\\.markdown\\'"
 	 )
+  :init
+  (custom-set-variables '(markdown-command "markdown"))
   )
 
 ;;; yasnippet
@@ -710,7 +713,7 @@ Move point to the beginning of the line, and run the normal hook
   (desktop-save-mode 1)
   ;; 保存場所を指定
   (let ((desktop-directory (locate-user-emacs-file ".cache/desktop/")))
-    (unless (file-directory-p desktop-directory) (mkdir desktop-directory))
+    (unless (file-directory-p desktop-directory) (mkdir desktop-directory t))
     (add-to-list 'desktop-path desktop-directory)
     (custom-set-variables `(desktop-dirname ,desktop-directory))
     )
