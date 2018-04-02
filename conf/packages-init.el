@@ -499,6 +499,26 @@ Move point to the beginning of the line, and run the normal hook
 ;; 	)
 ;;   )
 
+;;; rtags
+;; 参考: https://qiita.com/alpha22jp/items/90f7f2ad4f8b1fa089f4
+(use-package rtags
+  :after helm
+  :config
+  (custom-set-variables '(rtags-display-result-backend 'helm))
+  (defun rtags-settings ()
+    "rtag settings"
+    (when (rtags-is-indexed)
+      (local-set-key (kbd "M-.") 'rtags-find-symbol-at-point)
+      (local-set-key (kbd "M-C-.") 'rtags-find-symbol)
+      (local-set-key (kbd "M-,") 'rtags-location-stack-back)
+      (local-set-key (kbd "M-:") 'rtags-find-references)
+      )
+    )
+  (loop for hook in c-like-hooks
+      do (add-hook hook 'rtags-settings))
+  )
+
+
 ;; ;;; ac-clang-async
 ;; (use-package auto-complete-clang-async
 ;;   :after (auto-complete auto-complete-c-headers)
