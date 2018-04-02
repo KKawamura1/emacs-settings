@@ -211,7 +211,8 @@
   (global-company-mode)
   :config
   (custom-set-variables '(company-show-numbers t)
-			'(company-auto-complete t))
+			'(company-auto-complete t)
+			'(company-auto-complete-chars nil))
   )
 
 ;;; help for company
