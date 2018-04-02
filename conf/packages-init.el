@@ -464,6 +464,18 @@ Move point to the beginning of the line, and run the normal hook
   (custom-set-variables '(py-autopep8-options '("--max-line-length=100")))
   )
 
+;;; markdown-mode
+;; 参考
+;; http://futurismo.biz/archives/2137
+(use-package markdown-mode
+  :mode (
+	 "\\.md\\'"
+	 "\\.markdown\\'"
+	 )
+  :init
+  (custom-set-variables '(markdown-command "markdown"))
+  )
+
 ;;; cc-mode
 (use-package cc-mode
   :mode (
@@ -500,6 +512,14 @@ Move point to the beginning of the line, and run the normal hook
 ;; 	)
 ;;   )
 
+;;; cmake-mode
+(use-package cmake-mode
+  :mode (
+	 ("CMakeLists\\.txt\\'" . cmake-mode)
+	 ("\\.cmake\\'" . cmake-mode)
+	 )
+  )
+
 ;;; rtags
 ;; 参考: https://qiita.com/alpha22jp/items/90f7f2ad4f8b1fa089f4
 (use-package rtags
@@ -518,7 +538,6 @@ Move point to the beginning of the line, and run the normal hook
   (loop for hook in c-like-hooks
       do (add-hook hook 'rtags-settings))
   )
-
 
 ;; ;;; ac-clang-async
 ;; (use-package auto-complete-clang-async
@@ -566,20 +585,6 @@ Move point to the beginning of the line, and run the normal hook
   )
   ;; typeset
   (bind-key "C-c C-c" 'YaTeX-typeset-menu YaTeX-mode-map)
-  )
-
-;;; markdown-mode
-;; 参考
-;; http://futurismo.biz/archives/2137
-(use-package markdown-mode
-  :mode (
-	 "\\.txt\\'"
-	 "\\.text\\'"
-	 "\\.md\\'"
-	 "\\.markdown\\'"
-	 )
-  :init
-  (custom-set-variables '(markdown-command "markdown"))
   )
 
 ;;; yasnippet
