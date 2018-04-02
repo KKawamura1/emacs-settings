@@ -209,10 +209,14 @@
   :diminish company-mode
   :init
   (global-company-mode)
+  :bind ("M-TAB" . company-complete)
   :config
   (custom-set-variables '(company-show-numbers t)
 			'(company-auto-complete t)
-			'(company-auto-complete-chars nil))
+			'(company-auto-complete-chars nil)
+			'(company-dabbrev-downcase nil)
+			'(company-idle-delay 0)
+			'(company-minimum-prefix-length 2))
   )
 
 ;;; help for company
@@ -520,12 +524,39 @@ Move point to the beginning of the line, and run the normal hook
 	 )
   )
 
+;;; cmake-ide
+(use-package cmake-ide)
+
+;;; irony
+;; 参考: http://cachestocaches.com/2015/8/c-completion-emacs/
+(use-package irony
+  :defer t
+  :after (company flycheck)
+  :init
+  (add-hook 'c++-mode-hook 'irony-mode)
+  :config
+  (use-package irony-eldoc)
+  (use-package company-irony)
+  (use-package flycheck-irony)
+  (defun my-irony-mode-hook ()
+    (define-key irony-mode-map [remap completion-at-point]
+      'irony-completion-at-point-async)
+    (define-key irony-mode-map [remap complete-symbol]
+      'irony-completion-at-point-async))
+  (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)
+  (add-hook 'irony-mode-hook 'my-irony-mode-hook)
+  (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
+  (add-hook 'irony-mode-hook 'irony-eldoc)
+
+  (add-to-list 'company-backends 'company-irony)
+  (add-hook 'flycheck-mode-hook #'flycheck-irony-setup)
+  )
+
 ;;; rtags
 ;; 参考: https://qiita.com/alpha22jp/items/90f7f2ad4f8b1fa089f4
 (use-package rtags
-  :after helm
+  :after (helm company cmake-ide)
   :config
-  (custom-set-variables '(rtags-display-result-backend 'helm))
   (defun rtags-settings ()
     "rtag settings"
     (when (rtags-is-indexed)
@@ -536,7 +567,10 @@ Move point to the beginning of the line, and run the normal hook
       )
     )
   (loop for hook in c-like-hooks
-      do (add-hook hook 'rtags-settings))
+	do (add-hook hook 'rtags-settings))
+  (custom-set-variables '(rtags-display-result-backend 'helm))
+  (push 'company-rtags company-backends)
+  (cmake-ide-setup)
   )
 
 ;; ;;; ac-clang-async
