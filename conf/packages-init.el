@@ -471,7 +471,7 @@ Move point to the beginning of the line, and run the normal hook
 	 ("\\.hpp\\'" . c++-mode)
 	 ("\\.hh\\'" . c++-mode)
 	 ("\\.c\\'" . c-mode)
-	 ("\\.h\\'" . c-mode)
+	 ("\\.h\\'" . c++-mode)
 	 )
   )
 
