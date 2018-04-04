@@ -83,3 +83,15 @@
 (bind-keys :map python-mode-map
 	   ("C-c <right>" . python-indent-shift-right)
 	   ("C-c <left>" . python-indent-shift-left))
+
+;;; make
+;; (add-hook 'c-mode-common-hook
+;;           (lambda ()
+;; 	    (when (and (boundp 'cmake-ide-dir)
+;; 		     (file-exists-p (concat cmake-ide-dir "/Makefile")))
+;; 		(print 2)
+;; 		(set (make-local-variable 'compile-command)
+;; 		     (concat "make -k -C "
+;; 			     cmake-ide-dir
+;; 			     )))))
+(bind-key "C-c C-c" 'cmake-ide-compile)

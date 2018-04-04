@@ -390,7 +390,7 @@ Move point to the beginning of the line, and run the normal hook
 	     (pyenv-mode-set (s-trim (f-read-text pyenv-version-path 'utf-8))))))))
   ;; tramp時に悪さをするがないよりはあったほうがよい
   (add-hook 'find-file-hook 'ssbb-pyenv-hook)
-  :config
+  :init
   ;; 参考
   ;; https://org-technology.com/posts/emacs-elpy.html
   (elpy-enable)
@@ -482,6 +482,7 @@ Move point to the beginning of the line, and run the normal hook
 
 ;;; cc-mode
 (use-package cc-mode
+  :after cmake-ide
   :mode (
 	 ("\\.cpp\\'" . c++-mode)
 	 ("\\.cc\\'" . c++-mode)
@@ -490,6 +491,8 @@ Move point to the beginning of the line, and run the normal hook
 	 ("\\.c\\'" . c-mode)
 	 ("\\.h\\'" . c++-mode)
 	 )
+  :config
+  (bind-key "C-c C-c" 'cmake-ide-compile c++-mode-map)
   )
 
 ;;; clang-format
@@ -525,7 +528,10 @@ Move point to the beginning of the line, and run the normal hook
   )
 
 ;;; cmake-ide
-(use-package cmake-ide)
+(use-package cmake-ide
+  :config
+  (cmake-ide-setup)
+  )
 
 ;;; irony
 ;; 参考: http://cachestocaches.com/2015/8/c-completion-emacs/
@@ -555,7 +561,7 @@ Move point to the beginning of the line, and run the normal hook
 ;;; rtags
 ;; 参考: https://qiita.com/alpha22jp/items/90f7f2ad4f8b1fa089f4
 (use-package rtags
-  :after (helm company cmake-ide)
+  :after (company cmake-ide)
   :config
   (defun rtags-settings ()
     "rtag settings"
@@ -564,12 +570,15 @@ Move point to the beginning of the line, and run the normal hook
       (local-set-key (kbd "M-C-.") 'rtags-find-symbol)
       (local-set-key (kbd "M-,") 'rtags-location-stack-back)
       (local-set-key (kbd "M-:") 'rtags-find-references)
+      (rtags-start-process-unless-running)
       )
     )
   (loop for hook in c-like-hooks
 	do (add-hook hook 'rtags-settings))
-  (custom-set-variables '(rtags-display-result-backend 'helm))
-  (push 'company-rtags company-backends)
+  (custom-set-variables '(rtags-display-result-backend 'helm)
+			'(rtags-autostart-diagnostics t)
+			'(tags-revert-without-query 1))
+  (add-to-list 'company-backends 'company-rtags)
   (cmake-ide-setup)
   )
 
