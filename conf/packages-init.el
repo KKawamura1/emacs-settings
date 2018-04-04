@@ -368,6 +368,13 @@ Move point to the beginning of the line, and run the normal hook
 		  (if (boundp 'std-c++-version) std-c++-version "c++14")))))
   )
 
+;;; mypy for flycheck
+(use-package flycheck-mypy
+  :after flycheck
+  :config
+  (flycheck-add-next-checker 'python-flake8 '(warning . python-mypy))
+  )
+
 ;;; elpy
 ;; require some pip packages:
 ;;     flake8 importmagic yapf autopep8 ipdb jedi ipython
@@ -403,13 +410,13 @@ Move point to the beginning of the line, and run the normal hook
   (smartrep-define-key elpy-mode-map "C-c"
 		       '(("C-n" . flycheck-next-error)
 			 ("C-p" . flycheck-previous-error)))
-  ;; python で auto-complete が起動しないようにする
-  ;; 参考
-  ;; https://github.com/jorgenschaefer/elpy/issues/813
-  ;; (custom-set-variables '(ac-modes (delq 'python-mode ac-modes)))
-  ;; 逆にelpyの補完を消す
-  ;; 参考: http://d.hatena.ne.jp/keita44_f4/20160504
-  (auto-complete-mode -1)
+  ;; ;; python で auto-complete が起動しないようにする
+  ;; ;; 参考
+  ;; ;; https://github.com/jorgenschaefer/elpy/issues/813
+  ;; ;; (custom-set-variables '(ac-modes (delq 'python-mode ac-modes)))
+  ;; ;; 逆にelpyの補完を消す
+  ;; ;; 参考: http://d.hatena.ne.jp/keita44_f4/20160504
+  ;; (auto-complete-mode -1)
   ;; python-highlight-indentationをdisableする
   ;; 参考
   ;; https://github.com/jorgenschaefer/elpy/issues/66#event-48574382
@@ -422,6 +429,7 @@ Move point to the beginning of the line, and run the normal hook
   ;; (add-hook 'elpy-mode-hook 'highlight-indentation-mode)
   ;; (add-hook 'elpy-mode-hook 'highlight-indentation-current-column-mode)
 
+  :config
   ;; ipythonでmoduleを自動的にリロードする
   ;; これがないとeditしてC-cしても変更が適用されない
   ;; 参考
