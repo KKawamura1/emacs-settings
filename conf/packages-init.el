@@ -370,7 +370,7 @@ Move point to the beginning of the line, and run the normal hook
 
 ;;; mypy for flycheck
 (use-package flycheck-mypy
-  :after flycheck
+  :after (flycheck)
   :config
   (flycheck-add-next-checker 'python-flake8 '(warning . python-mypy))
   )
