@@ -476,6 +476,21 @@ Move point to the beginning of the line, and run the normal hook
   (custom-set-variables '(py-autopep8-options '("--max-line-length=100")))
   )
 
+;;; cython-mode
+(use-package cython-mode
+  :mode (
+	 "\\.pyx\\'"
+	 )
+  )
+
+;;; flycheck-cython
+(use-package flycheck-cython
+  :after (flycheck)
+  :init
+  (add-hook 'cython-mode-hook 'flycheck-mode)
+  )
+
+
 ;;; markdown-mode
 ;; 参考
 ;; http://futurismo.biz/archives/2137
