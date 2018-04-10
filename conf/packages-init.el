@@ -373,6 +373,9 @@ Move point to the beginning of the line, and run the normal hook
   :after (flycheck)
   :config
   (flycheck-add-next-checker 'python-flake8 '(warning . python-mypy))
+  ;; iniファイルを読ませる
+  (custom-set-variables `(flycheck-python-mypy-args
+  			  `("--config-file" ,(substitute-in-file-name "$HOME/.config/mypy/mypy.ini"))))
   )
 
 ;;; elpy
