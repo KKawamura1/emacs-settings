@@ -555,6 +555,7 @@ Move point to the beginning of the line, and run the normal hook
 
 ;;; cmake-ide
 (use-package cmake-ide
+  :disabled t ;; cmake setup is hard
   :config
   (cmake-ide-setup)
   )
@@ -562,6 +563,7 @@ Move point to the beginning of the line, and run the normal hook
 ;;; irony
 ;; 参考: http://cachestocaches.com/2015/8/c-completion-emacs/
 (use-package irony
+  :disabled t ;; cmake setup is hard
   :defer t
   :after (company flycheck)
   :init
